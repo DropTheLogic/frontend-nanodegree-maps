@@ -6,14 +6,86 @@
 	<meta name="Author" content="Danny Márquez">
 	<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-	<title>Neighborhood Map</title>
+	<title>The Williamsburger!</title>
 
 	<style type="text/css">
-
+		body {
+			font-family: 'Courier New', monospace;
+			margin: 0px;
+			background: #d7ccc8;
+		}
+		header {
+			text-align: center;
+		}
+		header h1 {
+			margin: 5px 10px;
+			color: #3e2723;
+			text-transform: uppercase;
+			transform: rotate(-1deg);
+		}
+		#subheader {
+			padding: 8px;
+		}
+		#listings {
+			position: fixed;
+			top: 0px;
+			left: -192px;
+			width: 200px;
+			height: 100%;
+			background: #795548;
+		}
+		#listings-tab {
+			position: fixed;
+			top: 140px;
+			left: 8px;
+			background: #795548;
+			padding: 12px 6px;
+			border-radius: 0px 4px 4px 0px;
+			color: #d7ccc8;
+		}
+		#listings-tab:hover {
+			/*left: 200px;*/
+		}
+		#listings-tab:hover #listings {
+			left: 0px;
+			box-shadow: 0px 2px 8px #3e2723;
+		}
+		.list-item {
+			padding: 8px 8px 12px 8px;
+		}
+		.list-item:hover {
+			background: #bcaaa4;
+		}
+		.list-item h5 {
+			margin: 8px 2px 0px;
+		}
+		.address {
+			font-size: 10px;
+			font-style: italic;
+		}
+		.list-item:hover h5, .list-item:hover .address {
+			color: #3e2723;
+		}
 	</style>
 </head>
 
 <body>
+	<header>
+		<h1>The Williamsburger!</h1>
+		<div id="subheader">Finding the burgers in Williamsburg</div>
+	</header>
+
+	<div id="listings-tab">Feed Me!
+		<div id="listings" data-bind="foreach: listings">
+			<div class="list-item">
+				<h5 data-bind="text: $data.name"></h5>
+				<div class="address" data-bind="text: $data.address"></div>
+			</div>
+		</div>
+	</div>
+
+	<div id="map"></div>
+
 	<script src="js/knockout-3.4.0.js"></script>
 	<script src="js/app.js"></script>
 </body>
