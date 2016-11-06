@@ -37,6 +37,7 @@ var MapsViewModel = function() {
 			'address': '123 6 Ave'
 		}
 	]);
+	self.filter = ko.observable();
 };
 
 ko.applyBindings(new MapsViewModel);
