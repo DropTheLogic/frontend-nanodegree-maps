@@ -26,27 +26,27 @@
 		#subheader {
 			padding: 8px;
 		}
-		#listings {
+		#side-panel {
 			position: fixed;
 			top: 0px;
 			left: -192px;
 			width: 200px;
 			height: 100%;
 			background: #795548;
+			color: #d7ccc8;
 		}
-		#listings-tab {
+		#side-panel-tab {
 			position: fixed;
 			top: 140px;
 			left: 8px;
 			background: #795548;
 			padding: 12px 6px;
 			border-radius: 0px 4px 4px 0px;
-			color: #d7ccc8;
 		}
-		#listings-tab:hover {
-			/*left: 200px;*/
+		#side-panel:hover #side-panel-tab {
+			display: none;
 		}
-		#listings-tab:hover #listings {
+		#side-panel:hover {
 			left: 0px;
 			box-shadow: 0px 2px 8px #3e2723;
 		}
@@ -83,7 +83,8 @@
 		<div id="subheader">Finding the burgers in Williamsburg</div>
 	</header>
 
-	<div id="listings-tab">Feed Me!
+	<div id="side-panel">
+		<div id="side-panel-tab">Feed Me!</div>
 		<div id="listings" data-bind="foreach: listings">
 			<div class="list-item">
 				<h5 data-bind="text: $data.name"></h5>
