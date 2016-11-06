@@ -1,3 +1,13 @@
+var map;
+
+var initMap = function() {
+	map = new google.maps.Map(document.getElementById('map'), {
+		center: {lat: 40.7081, lng: -73.9571},
+		zoom: 14,
+		mapTypeControl: false
+	});
+};
+
 var MapsViewModel = function() {
 	var self = this;
 	// Dummy locations
