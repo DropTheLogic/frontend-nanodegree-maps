@@ -29,9 +29,10 @@
 		#side-panel {
 			position: fixed;
 			top: 0px;
-			left: -192px;
-			width: 200px;
+			left: -210px;
+			width: 218px;
 			height: 100%;
+			overflow-y: none;
 			background: #795548;
 			color: #d7ccc8;
 		}
@@ -48,13 +49,22 @@
 		}
 		#side-panel:hover {
 			left: 0px;
+			overflow-y: auto;
 			box-shadow: 0px 2px 8px #3e2723;
+		}
+		#side-panel h3 {
+			margin: 0px;
+			padding: 8px;
+			text-align: center;
 		}
 		#filter {
 			padding: 8px;
+			font-size: 12px;
+			text-align: center;
+			box-shadow: 0px 2px 4px #3e2723;
 		}
 		#filter-name {
-			width: 180px;
+			width: 178px;
 		}
 		.list-item {
 			padding: 8px 8px 12px 8px;
@@ -97,13 +107,16 @@
 
 	<div id="side-panel">
 		<div id="side-panel-tab">Feed Me!</div>
+		<h3>THE LIST</h3>
 		<div id="filter">
 			<div>Filter list:</div>
-			<input id="filter-name" type="text" name="filter-name" placeholder="e.g. 'Dumont'" data-bind="textInput: filter" />
+			<input id="filter-name" type="text"
+				   name="filter-name" placeholder="e.g. 'DuMont'"
+				   data-bind="textInput: filter" />
+			<div data-bind="text: filterCountString"></div>
 		</div>
-		<div data-bind="text: filter"></div>
 		<div id="listings" data-bind="foreach: listings">
-			<div class="list-item">
+			<div class="list-item" data-bind="visible: $root.isFiltered($data)">
 				<h5 data-bind="text: $data.name"></h5>
 				<div class="address" data-bind="text: $data.address"></div>
 			</div>
