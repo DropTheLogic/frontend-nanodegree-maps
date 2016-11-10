@@ -14,25 +14,47 @@ var initMap = function() {
 	var pService = new google.maps.places.PlacesService(map);
 
 	// Fill markers array with listings
-	dataListings.forEach(function(data) {
-		if (data.googleID)
-		pService.getDetails({'placeId': data.googleID}, function(place, status) {
-			if (status === 'OK') {
-				var marker = new google.maps.Marker({
-					position: place.geometry.location,
-					title: place.name,
-					animation: google.maps.Animation.DROP
-				});
-				// Place marker on map
-				marker.setMap(map);
-				// Push marker into array
-				markers.push(marker);
-				// TODO: Create click event for infoWindow on each marker
-			} else {
-				alert('request failed due to: ' + status);
-			}
-		});
-	});
+	// (Use setInterval to parse through locations, so as to not throttle
+	// Google maps API requests too quickly)
+	var i = 0;
+	setInterval(function() {
+		var data = dataListings[i];
+		// Check for more places left and that the ID attribute exists
+		if (i++ < dataListings.length && data.googleID) {
+			// Get details from Google places library service
+			pService.getDetails({'placeId': data.googleID}, function(place, status) {
+				// Make sure Google maps api request is ok
+				if (status === 'OK') {
+					// Create new marker
+					var marker = new google.maps.Marker({
+						position: place.geometry.location,
+						title: place.name,
+						animation: google.maps.Animation.DROP,
+						id: place.place_id
+					});
+					// Place marker on map
+					marker.setMap(map);
+					// Push marker into array
+					markers.push(marker);
+					// Add listener to open infoWindow when clicked
+					marker.addListener('click', function() {
+						setMarker(this, infoWindow, place);
+					});
+				} else {
+					alert('Google Maps request failed due to: ' + status);
+				}
+			});
+		}
+	}, 200);
+};
+
+// Set formatted content for infoWindow
+var setMarker = function(marker, infowindow, place) {
+	var titleHTML = '<h3>' + place.name + '</h3>';
+	var addressHTML = '<div>' + place.formatted_address + '</div><hr />';
+	infowindow.setContent(titleHTML + addressHTML);
+	infowindow.marker = marker;
+	infowindow.open(map, marker);
 };
 
 var dataListings = [
