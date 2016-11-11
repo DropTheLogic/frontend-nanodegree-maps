@@ -30,7 +30,8 @@ var initMap = function() {
 						position: place.geometry.location,
 						title: place.name,
 						animation: google.maps.Animation.DROP,
-						id: place.place_id
+						formatted_address: place.formatted_address,
+						index: markers.length
 					});
 					// Place marker on map
 					marker.setMap(map);
@@ -38,7 +39,7 @@ var initMap = function() {
 					markers.push(marker);
 					// Add listener to open infoWindow when clicked
 					marker.addListener('click', function() {
-						setMarker(this, infoWindow, place);
+						setMarker(this, infoWindow);
 					});
 				} else {
 					alert('Google Maps request failed due to: ' + status);
@@ -49,9 +50,9 @@ var initMap = function() {
 };
 
 // Set formatted content for infoWindow
-var setMarker = function(marker, infowindow, place) {
-	var titleHTML = '<h3>' + place.name + '</h3>';
-	var addressHTML = '<div>' + place.formatted_address + '</div><hr />';
+var setMarker = function(marker, infowindow) {
+	var titleHTML = '<h3>' + marker.title + '</h3>';
+	var addressHTML = '<div>' + marker.formatted_address + '</div><hr />';
 	infowindow.setContent(titleHTML + addressHTML);
 	infowindow.marker = marker;
 	infowindow.open(map, marker);
@@ -131,7 +132,11 @@ var MapsViewModel = function() {
 	// Load listing data into observable array
 	self.listings = ko.observableArray();
 	dataListings.forEach(function(item) {
-		self.listings.push({name: item.name, address: item.address});
+		self.listings.push({
+			name: item.name,
+			address: item.address,
+			index: dataListings.indexOf(item)
+		});
 	});
 
 	self.filter = ko.observable('');
