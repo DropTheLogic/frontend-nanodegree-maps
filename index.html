@@ -29,28 +29,32 @@
 		#side-panel {
 			position: fixed;
 			top: 0px;
-			left: -210px;
 			width: 218px;
 			height: 100%;
-			overflow-y: none;
 			background: #795548;
 			color: #d7ccc8;
+		}
+		.side-panel-closed {
+			left: -210px;
+			overflow-y: hidden;
+		}
+		.side-panel-open {
+			left: 0px;
+			overflow-y: auto;
+			box-shadow: 0px 2px 8px #3e2723;
 		}
 		#side-panel-tab {
 			position: fixed;
 			top: 140px;
-			left: 8px;
 			background: #795548;
 			padding: 12px 6px;
 			border-radius: 0px 4px 4px 0px;
 		}
-		#side-panel:hover #side-panel-tab {
-			display: none;
+		.tab-open {
+			left: 218px;
 		}
-		#side-panel:hover {
-			left: 0px;
-			overflow-y: auto;
-			box-shadow: 0px 2px 8px #3e2723;
+		.tab-closed {
+			left: 8px;
 		}
 		#side-panel h3 {
 			margin: 0px;
@@ -105,8 +109,8 @@
 		<div id="subheader">Finding the burgers in Williamsburg</div>
 	</header>
 
-	<div id="side-panel">
-		<div id="side-panel-tab">Feed Me!</div>
+	<div id="side-panel" data-bind="css: setSidePanelCSS">
+		<div id="side-panel-tab" data-bind="click: toggleSidePanel, css: setTabCSS">Feed Me!</div>
 		<h3>THE LIST</h3>
 		<div id="filter">
 			<div>Filter list:</div>
@@ -120,6 +124,7 @@
 				visible: $root.isFiltered($data),
 				click: function() {
 					new google.maps.event.trigger(markers[this.index], 'click');
+					$root.toggleSidePanel();
 				}">
 				<h5 data-bind="text: $data.name"></h5>
 				<div class="address" data-bind="text: $data.address"></div>
@@ -127,7 +132,7 @@
 		</div>
 	</div>
 
-	<div id="map"></div>
+	<div id="map" data-bind="click: closeSidePanel"></div>
 
 	<script src="js/knockout-3.4.0.js"></script>
 	<script src="js/app.js"></script>

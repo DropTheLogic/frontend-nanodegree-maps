@@ -129,6 +129,25 @@ var dataListings = [
 var MapsViewModel = function() {
 	var self = this;
 
+	// Handle state of slide-out panel for listings
+	self.panelIsOpen = ko.observable(false);
+	self.toggleSidePanel = function() {
+		(self.panelIsOpen()) ? self.panelIsOpen(false) : self.panelIsOpen(true);
+	};
+	self.closeSidePanel = function() {
+		if (self.panelIsOpen) {
+			self.panelIsOpen(false);
+		}
+	};
+
+	// If side panel state is off, adjust CSS classes for side-panel and tab
+	self.setSidePanelCSS = ko.computed(function() {
+		return (self.panelIsOpen()) ? 'side-panel-open' : 'side-panel-closed';
+	}, this);
+	self.setTabCSS = ko.computed(function() {
+		return (self.panelIsOpen()) ? 'tab-open' : 'tab-closed';
+	}, this);
+
 	// Load listing data into observable array
 	self.listings = ko.observableArray();
 	dataListings.forEach(function(item) {
