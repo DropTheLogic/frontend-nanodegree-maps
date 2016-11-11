@@ -5,13 +5,14 @@ var markers = [];
 
 var initMap = function() {
 	map = new google.maps.Map(document.getElementById('map'), {
-		center: {lat: 40.7081, lng: -73.9571},
-		zoom: 14,
+		center: {lat: 40.713555, lng: -73.958551},
+		zoom: 15,
 		mapTypeControl: false
 	});
 
 	var infoWindow = new google.maps.InfoWindow();
 	var pService = new google.maps.places.PlacesService(map);
+	var mapBounds = new google.maps.LatLngBounds();
 
 	// Fill markers array with listings
 	// (Use setInterval to parse through locations, so as to not throttle
@@ -37,6 +38,10 @@ var initMap = function() {
 					marker.setMap(map);
 					// Push marker into array
 					markers.push(marker);
+					// Make sure map's bounds include this marker
+					mapBounds.extend(marker.position);
+					if (markers.length === dataListings.length)
+						map.fitBounds(mapBounds);
 					// Add listener to open infoWindow when clicked
 					marker.addListener('click', function() {
 						setMarker(this, infoWindow);
