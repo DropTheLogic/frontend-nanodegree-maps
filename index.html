@@ -18,7 +18,11 @@
 			text-align: center;
 		}
 		header h1 {
-			margin: 5px 10px;
+			width: 300px;
+			margin-top: 2px;
+			margin-bottom: 2px;
+			margin-left: auto;
+			margin-right: auto;
 			color: #3e2723;
 			text-transform: uppercase;
 			transform: rotate(-1deg);
@@ -45,10 +49,13 @@
 		}
 		#side-panel-tab {
 			position: fixed;
-			top: 140px;
+			top: 0px;
 			background: #795548;
-			padding: 12px 6px;
-			border-radius: 0px 4px 4px 0px;
+			padding: 10px 12px;
+			border-radius: 0px 0px 12px 0px;
+			color: #d7ccc8;
+			box-shadow: 0px 2px 8px #3e2723;
+			margin: 0px;
 		}
 		.tab-open {
 			left: 218px;
@@ -97,7 +104,9 @@
 		@media screen and (min-width: 400px) {
 			#subheader {
 				display: block;
-				padding: 8px;
+			}
+			#map {
+				top: 108px;
 			}
 		}
 	</style>
@@ -106,11 +115,11 @@
 <body>
 	<header>
 		<h1>The Williamsburger!</h1>
+		<h4 id="side-panel-tab" data-bind="click: toggleSidePanel, css: setTabCSS">Feed Me!</h4>
 		<div id="subheader">Finding the burgers in Williamsburg</div>
 	</header>
 
 	<div id="side-panel" data-bind="css: setSidePanelCSS">
-		<div id="side-panel-tab" data-bind="click: toggleSidePanel, css: setTabCSS">Feed Me!</div>
 		<h3>THE LIST</h3>
 		<div id="filter">
 			<div>Filter list:</div>
