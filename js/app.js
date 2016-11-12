@@ -32,12 +32,12 @@ var initMap = function() {
 						title: place.name,
 						animation: google.maps.Animation.DROP,
 						formatted_address: place.formatted_address,
-						index: markers.length
+						index: dataListings.indexOf(data)
 					});
 					// Place marker on map
 					marker.setMap(map);
 					// Push marker into array
-					markers.push(marker);
+					markers[dataListings.indexOf(data)] = marker;
 					// Make sure map's bounds include this marker
 					mapBounds.extend(marker.position);
 					if (markers.length === dataListings.length)
