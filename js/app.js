@@ -32,8 +32,11 @@ var initMap = function() {
 						title: place.name,
 						animation: google.maps.Animation.DROP,
 						formatted_address: place.formatted_address,
+						foursquareID: data.foursquareID,
 						index: dataListings.indexOf(data)
 					});
+					// Fetch and load Foursquare tips
+					getFoursquareTips(marker);
 					// Place marker on map
 					marker.setMap(map);
 					// Push marker into array
@@ -44,7 +47,7 @@ var initMap = function() {
 						map.fitBounds(mapBounds);
 					// Add listener to open infoWindow when clicked
 					marker.addListener('click', function() {
-						setMarker(this, infoWindow);
+						openInfoWindow(this, infoWindow);
 					});
 				} else {
 					alert('Google Maps request failed due to: ' + status);
@@ -55,79 +58,117 @@ var initMap = function() {
 };
 
 // Set formatted content for infoWindow
-var setMarker = function(marker, infowindow) {
-	var titleHTML = '<h3>' + marker.title + '</h3>';
-	var addressHTML = '<div>' + marker.formatted_address + '</div><hr />';
-	infowindow.setContent(titleHTML + addressHTML);
+var openInfoWindow = function(marker, infowindow) {
+	var title = '<h3>' + marker.title + '</h3>';
+	var address = '<div>' + marker.formatted_address + '</div><hr />';
+	var contentHTML = title + address + ((marker.tips) ? marker.tips : '');
+	infowindow.setContent(contentHTML);
 	infowindow.marker = marker;
 	infowindow.open(map, marker);
+};
+
+// Get foursquare tips data and place formatted string inside marker object
+var getFoursquareTips = function(marker) {
+	// Create request string
+	var foursquareUrl = 'https://api.foursquare.com/v2/venues/';
+	var venue = marker.foursquareID;
+	foursquareUrl += venue + '/tips?' + $.param({
+		'sort' : 'popular',
+		'limit' : 3,
+		'client_secret' : 'APIKEY',
+		'client_id' : 'APIKEY',
+		'v' : 20161111
+	});
+
+	// Make Foursquare tips request, set result in an HTML string in the marker
+	$.getJSON(foursquareUrl, function(data) {
+		var tips = '<h5>Tips from Foursquare users:</h5><ul class="tips">';
+		$.each(data.response.tips.items, function(key, value) {
+			tips += `<li>"${value.text}" - ${value.user.firstName}</li>`;
+		});
+		tips += '</ul>';
+		marker.tips = tips;
+	});
 };
 
 var dataListings = [
 	{ name: 'Umami Burger',
 	  address: '158 N 4th St, Brooklyn, NY',
 	  location: {lat: 40.71588719999999, lng: -73.9592588},
-	  googleID: 'ChIJESPDHl5ZwokRcj6FbVLbuew'
+	  googleID: 'ChIJESPDHl5ZwokRcj6FbVLbuew',
+	  foursquareID: '54233f50498e70470c230a9e'
 	},
 	{ name: 'Blue Collar',
 	  address: '160 Havemeyer St, Brooklyn, NY',
 	  location: {lat: 40.7114917, lng: -73.9578698},
-	  googleID: 'ChIJqzsHPOBbwokRx_MN2OEJ6BM'
+	  googleID: 'ChIJqzsHPOBbwokRx_MN2OEJ6BM',
+	  foursquareID: '4ffe3889e4b01d5de4d4a81a'
 	},
 	{ name: 'DuMont Burger',
 	  address: '314 Bedford Ave, Brooklyn, NY',
 	  location: {lat: 40.7136831, lng: -73.9621056},
-	  googleID: 'ChIJ10LYAt9bwokRpENP2An7El8'
+	  googleID: 'ChIJ10LYAt9bwokRpENP2An7El8',
+	  foursquareID: '439308daf964a520712b1fe3'
 	},
 	{ name: 'Peter Luger Steak House',
 	  address: '178 Broadway, Brooklyn, NY',
 	  location: {lat: 40.709819, lng: -73.962467},
-	  googleID: 'ChIJR_bK295bwokR8gM6QgEdmkY'
+	  googleID: 'ChIJR_bK295bwokR8gM6QgEdmkY',
+	  foursquareID: '3fd66200f964a5209beb1ee3'
 	},
 	{ name: 'Diner',
 	  address: '85 Broadway, Brooklyn, NY',
 	  location: {lat: 40.7106886, lng: -73.9655691},
-	  googleID: 'ChIJvzYmKtlbwokRHye6SmfknDM'
+	  googleID: 'ChIJvzYmKtlbwokRHye6SmfknDM',
+	  foursquareID: '3fd66200f964a5207feb1ee3'
 	},
 	{ name: "Pop's Burger",
 	  address: '167 N 8th St, Brooklyn, NY',
 	  location: {lat: 40.7181769, lng: -73.95702349999999},
-	  googleID: 'ChIJJd87tF1ZwokRztj3_6guix4'
+	  googleID: 'ChIJJd87tF1ZwokRztj3_6guix4',
+	  foursquareID: '4a23d6c0f964a520dd7d1fe3'
 	},
 	{ name: 'Ramen Burger',
 	  address: '90 Kent Ave, Brooklyn, NY',
 	  location: {lat: 40.7214853, lng: -73.9621174},
-	  googleID: 'ChIJTV4tpWdZwokRtZZtuDBZjTY'
+	  googleID: 'ChIJTV4tpWdZwokRtZZtuDBZjTY',
+	  foursquareID: '5532b4a8498ee29a1298a6c3'
 	},
 	{ name: 'The Burger Guru',
 	  address: '98 Berry St, Brooklyn, NY',
 	  location: {lat: 40.71917699999999, lng: -73.958643},
-	  googleID: 'ChIJyYFam11ZwokRWMaL1wvAFlo'
+	  googleID: 'ChIJyYFam11ZwokRWMaL1wvAFlo',
+	  foursquareID: '4df41f33aeb7170aa2f3adf4'
 	},
 	{ name: 'Allswell',
 	  address: '124 Bedford Ave, Brooklyn, NY',
 	  location: {lat: 40.7196568, lng: -73.9559515},
-	  googleID: 'ChIJa7Bx-1xZwokRLAsf1yepN3Y'
+	  googleID: 'ChIJa7Bx-1xZwokRLAsf1yepN3Y',
+	  foursquareID: '4e18c39da8097d08b23ac35d'
 	},
 	{ name: 'The Commodore',
 	  address: '366 Metropolitan Ave, Brooklyn, NY',
 	  location: {lat: 40.7139371, lng: -73.9558631},
-	  googleID: 'ChIJpwY0A19ZwokR3XNKVbz8Lqg'
+	  googleID: 'ChIJpwY0A19ZwokR3XNKVbz8Lqg',
+	  foursquareID: '4bd254bd77b29c743da18e82'
 	},
 	{ name: "Walter Foods",
 	  address: '253 Grand St, Brooklyn, NY',
 	  location: {lat: 40.713555, lng: -73.958551},
-	  googleID: 'ChIJIa3vw19ZwokR6gAqP0kXg4A'
+	  googleID: 'ChIJIa3vw19ZwokR6gAqP0kXg4A',
+	  foursquareID: '49c3df11f964a52081561fe3'
 	},
 	{ name: 'Cow & Clover',
 	  address: '291 Kent Ave, Brooklyn, NY',
 	  location: {lat: 40.71452780000001, lng: -73.9665327},
-	  googleID: 'ChIJresRPmJZwokRGNjAHuO7CQw'
+	  googleID: 'ChIJresRPmJZwokRGNjAHuO7CQw',
+	  foursquareID: '5407a76e498e743eaa26f8a4'
 	},
 	{ name: 'Checkers',
 	  address: '277 Broadway, Brooklyn, NY',
 	  location: {lat: 40.7088007, lng: -73.9586784},
-	  googleID: 'ChIJ-_HAkOBbwokRiKV330CJkBU'
+	  googleID: 'ChIJ-_HAkOBbwokRiKV330CJkBU',
+	  foursquareID: '4c9bd1140313370443af4fd5'
 	}
 ];
 
