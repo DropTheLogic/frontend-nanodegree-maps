@@ -35,9 +35,8 @@ var initMap = function() {
 						foursquareID: data.foursquareID,
 						index: dataListings.indexOf(data)
 					});
-					// Fetch and load Foursquare tips
-					getFoursquareTips(marker);
-					getFoursquarePhoto(marker);
+					// Fetch and load Foursquare Data
+					getFoursquareData(marker);
 					// Place marker on map
 					marker.setMap(map);
 					// Push marker into array
@@ -68,51 +67,37 @@ var openInfoWindow = function(marker, infowindow) {
 	infowindow.open(map, marker);
 };
 
-// Get foursquare tips data and place formatted string inside marker object
-var getFoursquareTips = function(marker) {
-	// Create request string
-	var foursquareUrl = 'https://api.foursquare.com/v2/venues/';
-	var venue = marker.foursquareID;
-	foursquareUrl += venue + '/tips?' + $.param({
-		'sort' : 'popular',
-		'limit' : 15,
+// Get Foursquare data and place formatted data inside marker
+var getFoursquareData = function(marker) {
+	// Create request url string
+	var url = 'https://api.foursquare.com/v2/venues/' + marker.foursquareID;
+	url += '?' + $.param({
 		'client_secret' : 'APIKEY',
 		'client_id' : 'APIKEY',
 		'v' : 20161111
 	});
 
-	// Make Foursquare tips request, set result in an HTML string in the marker
-	$.getJSON(foursquareUrl, function(data) {
-		var tips = '<h5>Tips from Foursquare users:</h5><ul class="tips">';
-		$.each(data.response.tips.items, function(key, value) {
-			if (value.text.indexOf('burger') >= 0) {
-				tips += `<li>"${value.text}" - ${value.user.firstName}</li>`;
-			}
-		});
-		tips += '</ul>';
-		marker.tips = tips;
-	});
-};
-
-// Get foursquare photo data
-var getFoursquarePhoto = function(marker) {
-	// Create request string
-	var foursquareUrl = 'https://api.foursquare.com/v2/venues/';
-	var venue = marker.foursquareID;
-	foursquareUrl += venue + '/photos?' + $.param({
-		'limit' : 3,
-		'client_secret' : 'APIKEY',
-		'client_id' : 'APIKEY',
-		'v' : 20161111
-	});
-
-	// Make request
-	$.getJSON(foursquareUrl, function(data) {
-		var size = 'height100';
-		var photoURL = data.response.photos.items[0].prefix;
-		photoURL += size + data.response.photos.items[0].suffix;
+	// Make data request
+	$.getJSON(url, function(data) {
+		// Place photo data
+		var picSize = 'height100';
+		var photoURL = data.response.venue.bestPhoto.prefix;
+		photoURL += picSize + data.response.venue.bestPhoto.suffix;
 		marker.photo = '<img src="' + photoURL +
-			'" class="photo-frame" alt="photo"/>';
+			'" class="photo-frame" alt="Foursquare photo of restaurant"/>';
+
+		// Place tips data
+		var tipsHTML = '<h5>Tips from Foursquare users:</h5><ul class="tips">';
+		var tipData = data.response.venue.tips.groups[0];
+		var tipsLimit = (tipData.count < 15) ? tipData.count : 15;
+		for (var i = 0; i < tipsLimit; i++) {
+			var tip = tipData.items[i];
+			if (tip.text.indexOf('burger') >= 0) {
+				tipsHTML += `<li>"${tip.text}" - ${tip.user.firstName}</li>`;
+			}
+		}
+		tipsHTML += '</ul>';
+		marker.tips = tipsHTML;
 	});
 };
 
