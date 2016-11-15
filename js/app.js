@@ -37,6 +37,7 @@ var initMap = function() {
 					});
 					// Fetch and load Foursquare tips
 					getFoursquareTips(marker);
+					getFoursquarePhoto(marker);
 					// Place marker on map
 					marker.setMap(map);
 					// Push marker into array
@@ -59,9 +60,9 @@ var initMap = function() {
 
 // Set formatted content for infoWindow
 var openInfoWindow = function(marker, infowindow) {
-	var title = '<h3>' + marker.title + '</h3>';
+	var title = '<h3 class="info-window-title">' + marker.title + '</h3>';
 	var address = '<div>' + marker.formatted_address + '</div><hr />';
-	var contentHTML = title + address + ((marker.tips) ? marker.tips : '');
+	var contentHTML = marker.photo + title + address + marker.tips;
 	infowindow.setContent(contentHTML);
 	infowindow.marker = marker;
 	infowindow.open(map, marker);
@@ -74,7 +75,7 @@ var getFoursquareTips = function(marker) {
 	var venue = marker.foursquareID;
 	foursquareUrl += venue + '/tips?' + $.param({
 		'sort' : 'popular',
-		'limit' : 3,
+		'limit' : 15,
 		'client_secret' : 'APIKEY',
 		'client_id' : 'APIKEY',
 		'v' : 20161111
@@ -84,10 +85,34 @@ var getFoursquareTips = function(marker) {
 	$.getJSON(foursquareUrl, function(data) {
 		var tips = '<h5>Tips from Foursquare users:</h5><ul class="tips">';
 		$.each(data.response.tips.items, function(key, value) {
-			tips += `<li>"${value.text}" - ${value.user.firstName}</li>`;
+			if (value.text.indexOf('burger') >= 0) {
+				tips += `<li>"${value.text}" - ${value.user.firstName}</li>`;
+			}
 		});
 		tips += '</ul>';
 		marker.tips = tips;
+	});
+};
+
+// Get foursquare photo data
+var getFoursquarePhoto = function(marker) {
+	// Create request string
+	var foursquareUrl = 'https://api.foursquare.com/v2/venues/';
+	var venue = marker.foursquareID;
+	foursquareUrl += venue + '/photos?' + $.param({
+		'limit' : 3,
+		'client_secret' : 'APIKEY',
+		'client_id' : 'APIKEY',
+		'v' : 20161111
+	});
+
+	// Make request
+	$.getJSON(foursquareUrl, function(data) {
+		var size = 'height100';
+		var photoURL = data.response.photos.items[0].prefix;
+		photoURL += size + data.response.photos.items[0].suffix;
+		marker.photo = '<img src="' + photoURL +
+			'" class="photo-frame" alt="photo"/>';
 	});
 };
 

@@ -101,6 +101,20 @@
 			bottom: 0px;
 			z-index: -1;
 		}
+		.info-window-title {
+			font-size: 1.5em;
+			margin: 5px 0px;
+		}
+		.photo-frame {
+			margin: 2px;
+			border: 5px solid #eee;
+			box-shadow: 1px 1px 0px #999;
+		}
+		.tips {
+			max-width: 250px;
+			max-height: 120px;
+			overflow-y: scroll;
+		}
 		.tips li {
 			font-style: italic;
 			padding: 5px;
@@ -111,6 +125,11 @@
 			}
 			#map {
 				top: 108px;
+			}
+		}
+		@media screen and (min-height: 650px) {
+			.tips {
+				max-height: 170px;
 			}
 		}
 	</style>
