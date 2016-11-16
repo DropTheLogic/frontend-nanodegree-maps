@@ -61,7 +61,14 @@ var initMap = function() {
 var openInfoWindow = function(marker, infowindow) {
 	var title = '<h3 class="info-window-title">' + marker.title + '</h3>';
 	var address = '<div>' + marker.formatted_address + '</div><hr />';
-	var contentHTML = marker.photo + title + address + marker.tips;
+	var contentHTML = '<div class="info-window">' + marker.photo + title + address;
+	if (marker.description) {
+		contentHTML += marker.description;
+	}
+	if (marker.tips) {
+		contentHTML += marker.tips;
+	}
+	contentHTML += '</div>';
 	infowindow.setContent(contentHTML);
 	infowindow.marker = marker;
 	infowindow.open(map, marker);
@@ -86,8 +93,12 @@ var getFoursquareData = function(marker) {
 		marker.photo = '<img src="' + photoURL +
 			'" class="photo-frame" alt="Foursquare photo of restaurant"/>';
 
+		// Place description data
+		if (data.response.venue.description)
+			marker.description = data.response.venue.description;
+
 		// Place tips data
-		var tipsHTML = '<h5>Tips from Foursquare users:</h5><ul class="tips">';
+		var tipsHTML = '<h5>Tips from Foursquare users:</h5><ul>';
 		var tipData = data.response.venue.tips.groups[0];
 		var tipsLimit = (tipData.count < 15) ? tipData.count : 15;
 		for (var i = 0; i < tipsLimit; i++) {
