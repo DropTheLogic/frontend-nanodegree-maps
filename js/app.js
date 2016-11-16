@@ -60,8 +60,13 @@ var initMap = function() {
 // Set formatted content for infoWindow
 var openInfoWindow = function(marker, infowindow) {
 	var title = '<h3 class="info-window-title">' + marker.title + '</h3>';
-	var address = '<div>' + marker.formatted_address + '</div><hr />';
+	var address = '<div>' + marker.formatted_address + '</div>';
 	var contentHTML = '<div class="info-window">' + marker.photo + title + address;
+	if (marker.hours) {
+		contentHTML += marker.hours;
+		contentHTML += marker.isOpen;
+	}
+	contentHTML += '<hr />';
 	if (marker.description) {
 		contentHTML += marker.description;
 	}
@@ -86,20 +91,40 @@ var getFoursquareData = function(marker) {
 
 	// Make data request
 	$.getJSON(url, function(data) {
+		var venue = data.response.venue;
 		// Place photo data
 		var picSize = 'height100';
-		var photoURL = data.response.venue.bestPhoto.prefix;
-		photoURL += picSize + data.response.venue.bestPhoto.suffix;
+		var photoURL = venue.bestPhoto.prefix;
+		photoURL += picSize + venue.bestPhoto.suffix;
 		marker.photo = '<img src="' + photoURL +
 			'" class="photo-frame" alt="Foursquare photo of restaurant"/>';
 
+		// Place hours data
+		if (venue.hours) {
+			var hours = venue.hours;
+			// Display currently open or closed info
+			if (hours.isOpen) {
+				marker.isOpen = '<div class="open-now"> Open Now! </div>';
+			}
+			else {
+				marker.isOpen = '<div class="closed"> (Currenly Closed) </div>';
+			}
+			// Dipsplay Business Hours
+			marker.hours = '<div class="hours"> Hours:';
+			hours.timeframes.forEach(function (timeframe) {
+				marker.hours +=
+					`<div class="hours-sub">${timeframe.days}` +
+					` : ${timeframe.open[0].renderedTime}</div>`;
+			});
+			marker.hours += '</div>';
+		}
 		// Place description data
-		if (data.response.venue.description)
-			marker.description = data.response.venue.description;
+		if (venue.description)
+			marker.description = venue.description;
 
 		// Place tips data
-		var tipsHTML = '<h5>Tips from Foursquare users:</h5><ul>';
-		var tipData = data.response.venue.tips.groups[0];
+		var tipsHTML = '<h5>Tips from Foursquare users:</h5><ul class="tips">';
+		var tipData = venue.tips.groups[0];
 		var tipsLimit = (tipData.count < 15) ? tipData.count : 15;
 		for (var i = 0; i < tipsLimit; i++) {
 			var tip = tipData.items[i];
