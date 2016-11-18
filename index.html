@@ -31,10 +31,10 @@
 			display: none;
 		}
 		#side-panel {
-			position: fixed;
+			position: absolute;
 			top: 0px;
+			bottom: 0px;
 			width: 218px;
-			height: 100%;
 			background: #795548;
 			color: #d7ccc8;
 		}
@@ -143,6 +143,27 @@
 			}
 			#map {
 				top: 108px;
+			}
+		}
+		@media screen and (min-width: 720px) {
+			#side-panel {
+				top: 108px;
+			}
+			.side-panel-closed {
+				left: 0px;
+				overflow-y: auto;
+				box-shadow: 0px 2px 8px #3e2723;
+			}
+			#side-panel-tab {
+				display: none;
+			}
+		}
+		@media screen and (min-width: 920px) {
+			#side-panel {
+				width: 25%;
+			}
+			#map {
+				left: 25%;
 			}
 		}
 	</style>
