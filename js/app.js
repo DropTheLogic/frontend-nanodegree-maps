@@ -110,14 +110,15 @@ var getFoursquareData = function(marker) {
 				marker.isOpen = '<div class="closed"> (Currenly Closed) </div>';
 			}
 			// Dipsplay Business Hours
-			marker.hours = '<div class="hours"> Hours:';
+			marker.hours = '<div class="section-head"> Hours:';
 			hours.timeframes.forEach(function (timeframe) {
 				marker.hours +=
-					`<div class="hours-sub">${timeframe.days}` +
+					`<div class="section-sub">${timeframe.days}` +
 					` : ${timeframe.open[0].renderedTime}</div>`;
 			});
 			marker.hours += '</div>';
 		}
+
 		// Place description data
 		if (venue.description)
 			marker.description = venue.description;
