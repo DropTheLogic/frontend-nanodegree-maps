@@ -37,10 +37,8 @@ var initMap = function() {
 					});
 					// Fetch and load Foursquare Data
 					getFoursquareData(marker);
-					// Place marker on map
-					marker.setMap(map);
 					// Push marker into array
-					markers[dataListings.indexOf(data)] = marker;
+					markers[dataListings.indexOf(data)](marker);
 					// Make sure map's bounds include this marker
 					mapBounds.extend(marker.position);
 					if (markers.length === dataListings.length)
@@ -251,6 +249,11 @@ var MapsViewModel = function() {
 		});
 	});
 
+	// Load blank observables into markers array
+	for (var i = 0; i < dataListings.length; i++) {
+		markers[i] = ko.observable('');
+	}
+
 	self.filter = ko.observable('');
 
 	// Find if a given listing is within input filter
@@ -258,8 +261,17 @@ var MapsViewModel = function() {
 		var name = listing.name.toLowerCase();
 		var address = listing.address.toLowerCase();
 		var filter = self.filter().toLowerCase();
+		var thisMarker = markers[listing.index]();
 		if (name.indexOf(filter) !== -1 || address.indexOf(filter) !== -1) {
+			// Diplay marker when listing is included in the filter
+			if (thisMarker) {
+				thisMarker.setMap(map);
+			}
 			return true;
+		}
+		// Remove marker when not included in filter
+		if (thisMarker) {
+			thisMarker.setMap(null);
 		}
 		return false;
 	};

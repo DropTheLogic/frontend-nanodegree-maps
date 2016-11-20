@@ -189,7 +189,7 @@
 			<div class="list-item" data-bind="
 				visible: $root.isFiltered($data),
 				click: function() {
-					new google.maps.event.trigger(markers[this.index], 'click');
+					new google.maps.event.trigger(markers[this.index](), 'click');
 					$root.toggleSidePanel();
 				}">
 				<h5 data-bind="text: $data.name"></h5>
