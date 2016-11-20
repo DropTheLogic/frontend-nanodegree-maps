@@ -264,6 +264,16 @@ var MapsViewModel = function() {
 		return false;
 	};
 
+	// Clear filter if ESC is pressed
+	self.esc = function(data, event) {
+		if (event && event.keyCode === 27) {
+			self.filter('');
+			return true;
+		}
+		else
+			return true;
+	};
+
 	// Counts number of results based on filter, outputs string based on count
 	self.filterCountString = ko.computed(function() {
 		var count = 0;

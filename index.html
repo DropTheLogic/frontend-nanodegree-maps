@@ -182,7 +182,7 @@
 			<div>Filter list:</div>
 			<input id="filter-name" type="text"
 				   name="filter-name" placeholder="e.g. 'DuMont'"
-				   data-bind="textInput: filter" />
+				   data-bind="textInput: filter, event: {keydown: $root.esc}" />
 			<div data-bind="text: filterCountString"></div>
 		</div>
 		<div id="listings" data-bind="foreach: listings">
