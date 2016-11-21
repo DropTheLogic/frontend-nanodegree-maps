@@ -1,4 +1,5 @@
 var map;
+var mapBounds;
 
 // Array of markers for the map
 var markers = [];
@@ -12,7 +13,7 @@ var initMap = function() {
 
 	var infoWindow = new google.maps.InfoWindow();
 	var pService = new google.maps.places.PlacesService(map);
-	var mapBounds = new google.maps.LatLngBounds();
+	mapBounds = new google.maps.LatLngBounds();
 
 	// Fill markers array with listings
 	// (Use setInterval to parse through locations, so as to not throttle
@@ -39,10 +40,10 @@ var initMap = function() {
 					getFoursquareData(marker);
 					// Push marker into array
 					markers[dataListings.indexOf(data)](marker);
-					// Make sure map's bounds include this marker
-					mapBounds.extend(marker.position);
-					if (markers.length === dataListings.length)
-						map.fitBounds(mapBounds);
+					// If this is the last marker to load, center map
+					if (i === dataListings.length) {
+						centerMap(mapBounds);
+					}
 					// Add listener to open infoWindow when clicked
 					marker.addListener('click', function() {
 						openInfoWindow(this, infoWindow);
@@ -74,7 +75,23 @@ var openInfoWindow = function(marker, infowindow) {
 	contentHTML += '</div>';
 	infowindow.setContent(contentHTML);
 	infowindow.marker = marker;
+	// Add close listener, in order to re-enter map on close
+	google.maps.event.addListener(infowindow, 'closeclick', function() {
+		centerMap();
+	});
 	infowindow.open(map, marker);
+};
+
+// Center map around visible markers
+var centerMap = function() {
+	// Extend map bounds to include visible markers
+	markers.forEach(function(marker) {
+		if (marker().position) {
+			mapBounds.extend(marker().position);
+		}
+	});
+	// Fit map to bounds
+	map.fitBounds(mapBounds);
 };
 
 // Get Foursquare data and place formatted data inside marker
@@ -266,6 +283,7 @@ var MapsViewModel = function() {
 			// Diplay marker when listing is included in the filter
 			if (thisMarker) {
 				thisMarker.setMap(map);
+				centerMap();
 			}
 			return true;
 		}
