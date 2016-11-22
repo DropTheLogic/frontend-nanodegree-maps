@@ -31,6 +31,9 @@ var initMap = function() {
 					var marker = new google.maps.Marker({
 						position: place.geometry.location,
 						title: place.name,
+						icon: {
+							url: 'img/hamburger-pin-brown.png',
+							scaledSize : new google.maps.Size(55, 36)},
 						animation: google.maps.Animation.DROP,
 						formatted_address: place.formatted_address,
 						foursquareID: data.foursquareID,
@@ -47,6 +50,19 @@ var initMap = function() {
 					// Add listener to open infoWindow when clicked
 					marker.addListener('click', function() {
 						openInfoWindow(this, infoWindow);
+					});
+					// Add listeners to change marker icon color
+					marker.addListener('mouseover', function() {
+						this.setIcon({
+							url: 'img/hamburger-pin-red.png',
+							scaledSize : new google.maps.Size(55, 36)
+						});
+					});
+					marker.addListener('mouseout', function() {
+						this.setIcon({
+							url: 'img/hamburger-pin-brown.png',
+							scaledSize : new google.maps.Size(55, 36)
+						});
 					});
 				} else {
 					alert('Google Maps request failed due to: ' + status);
