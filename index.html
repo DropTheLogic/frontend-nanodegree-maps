@@ -21,11 +21,11 @@
 			width: 300px;
 			margin-top: 2px;
 			margin-bottom: 2px;
-			margin-left: auto;
-			margin-right: auto;
 			color: #3e2723;
 			text-transform: uppercase;
 			transform: rotate(-1deg);
+			display: inline-block;
+			vertical-align: top;
 		}
 		#subheader {
 			display: none;
@@ -140,9 +140,22 @@
 		@media screen and (min-width: 400px) {
 			#subheader {
 				display: block;
+				position: relative;
 			}
 			#map {
 				top: 108px;
+			}
+		}
+		@media screen and (min-width: 638px) {
+			.logo {
+				background-image: url('img/hamburger.png');
+				background-size: 152px 100px;
+				width: 152px;
+				height: 100px;
+				display: inline-block;
+			}
+			#subheader {
+				top: -27px;
 			}
 		}
 		@media screen and (min-width: 720px) {
@@ -171,7 +184,9 @@
 
 <body>
 	<header>
+		<div class="logo"></div>
 		<h1>The Williamsburger!</h1>
+		<div class="logo"></div>
 		<h4 id="side-panel-tab" data-bind="click: toggleSidePanel, css: setTabCSS">Feed Me!</h4>
 		<div id="subheader">Finding the burgers in Williamsburg</div>
 	</header>
