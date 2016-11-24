@@ -272,16 +272,6 @@ var MapsViewModel = function() {
 		return (self.panelIsOpen()) ? 'tab-open' : 'tab-closed';
 	}, this);
 
-	// Load listing data into observable array
-	self.listings = ko.observableArray();
-	dataListings.forEach(function(item) {
-		self.listings.push({
-			name: item.name,
-			address: item.address,
-			index: dataListings.indexOf(item)
-		});
-	});
-
 	// Load blank observables into markers array
 	for (var i = 0; i < dataListings.length; i++) {
 		markers[i] = ko.observable('');
@@ -290,22 +280,21 @@ var MapsViewModel = function() {
 	self.filter = ko.observable('');
 
 	// Find if a given listing is within input filter
-	self.isFiltered = function(listing) {
-		var name = listing.name.toLowerCase();
-		var address = listing.address.toLowerCase();
-		var filter = self.filter().toLowerCase();
-		var thisMarker = markers[listing.index]();
-		if (name.indexOf(filter) !== -1 || address.indexOf(filter) !== -1) {
-			// Diplay marker when listing is included in the filter
-			if (thisMarker) {
-				thisMarker.setMap(map);
+	self.isFiltered = function(marker) {
+		if (marker.title && marker.formatted_address) {
+			var name = marker.title.toLowerCase();
+			var address = marker.formatted_address.toLowerCase();
+			var filter = self.filter().toLowerCase();
+			if (name.indexOf(filter) !== -1 || address.indexOf(filter) !== -1) {
+				// Diplay marker when listing is included in the filter
+				marker.setMap(map);
 				centerMap();
+				return true;
 			}
-			return true;
-		}
-		// Remove marker when not included in filter
-		if (thisMarker) {
-			thisMarker.setMap(null);
+			// Remove marker when not included in filter
+			else {
+				marker.setMap(null);
+			}
 		}
 		return false;
 	};
@@ -323,8 +312,8 @@ var MapsViewModel = function() {
 	// Counts number of results based on filter, outputs string based on count
 	self.filterCountString = ko.computed(function() {
 		var count = 0;
-		self.listings().forEach(function(listing) {
-			if (self.isFiltered(listing))
+		markers.forEach(function(marker) {
+			if (self.isFiltered(marker()))
 				count++;
 		});
 		return '(' + count + ((count === 1) ? ' place' : ' places') + ' found)';

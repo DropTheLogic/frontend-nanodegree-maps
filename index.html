@@ -203,15 +203,15 @@
 				   data-bind="textInput: filter, event: {keydown: $root.esc}" />
 			<div data-bind="text: filterCountString"></div>
 		</div>
-		<div id="listings" data-bind="foreach: listings">
+		<div id="listings" data-bind="foreach: markers">
 			<div class="list-item" data-bind="
 				visible: $root.isFiltered($data),
 				click: function() {
-					new google.maps.event.trigger(markers[this.index](), 'click');
+					new google.maps.event.trigger($data, 'click');
 					$root.toggleSidePanel();
 				}">
-				<h5 data-bind="text: $data.name"></h5>
-				<div class="address" data-bind="text: $data.address"></div>
+				<h5 data-bind="text: $data.title"></h5>
+				<div class="address" data-bind="text: $data.formatted_address"></div>
 			</div>
 		</div>
 	</div>
