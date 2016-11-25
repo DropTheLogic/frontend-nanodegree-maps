@@ -76,7 +76,11 @@ var initMap = function() {
 var openInfoWindow = function(marker, infowindow) {
 	var title = '<h3 class="info-window-title">' + marker.title + '</h3>';
 	var address = '<div>' + marker.formatted_address + '</div>';
-	var contentHTML = '<div class="info-window">' + marker.photo + title + address;
+	var contentHTML = '<div class="info-window">';
+	if (marker.photo) {
+		contentHTML += marker.photo;
+	}
+	contentHTML += title + address;
 	if (marker.hours) {
 		contentHTML += marker.hours;
 		contentHTML += marker.isOpen;
@@ -121,51 +125,62 @@ var getFoursquareData = function(marker) {
 	});
 
 	// Make data request
-	$.getJSON(url, function(data) {
-		var venue = data.response.venue;
-		// Place photo data
-		var picSize = 'height100';
-		var photoURL = venue.bestPhoto.prefix;
-		photoURL += picSize + venue.bestPhoto.suffix;
-		marker.photo = '<img src="' + photoURL +
-			'" class="photo-frame" alt="Foursquare photo of restaurant"/>';
+	$.ajax({
+		url: url,
+		type: 'GET',
+		async: true,
+		dataType: 'json',
+		success: function(data) {
+			var venue = data.response.venue;
+			// Place photo data
+			if (venue.bestPhoto) {
+				var picSize = 'height100';
+				var photoURL = venue.bestPhoto.prefix;
+				photoURL += picSize + venue.bestPhoto.suffix;
+				marker.photo = '<img src="' + photoURL +
+					'" class="photo-frame" alt="Foursquare photo of restaurant"/>';
+			}
 
-		// Place hours data
-		if (venue.hours) {
-			var hours = venue.hours;
-			// Display currently open or closed info
-			if (hours.isOpen) {
-				marker.isOpen = '<div class="open-now"> Open Now! </div>';
+			// Place hours data
+			if (venue.hours) {
+				var hours = venue.hours;
+				// Display currently open or closed info
+				if (hours.isOpen) {
+					marker.isOpen = '<div class="open-now"> Open Now! </div>';
+				}
+				else {
+					marker.isOpen = '<div class="closed"> (Currenly Closed) </div>';
+				}
+				// Dipsplay Business Hours
+				marker.hours = '<div class="section-head"> Hours:';
+				hours.timeframes.forEach(function (timeframe) {
+					marker.hours +=
+						`<div class="section-sub">${timeframe.days}` +
+						` : ${timeframe.open[0].renderedTime}</div>`;
+				});
+				marker.hours += '</div>';
 			}
-			else {
-				marker.isOpen = '<div class="closed"> (Currenly Closed) </div>';
+
+			// Place description data
+			if (venue.description)
+				marker.description = venue.description;
+
+			// Place tips data
+			var tipsHTML = '<h5>Tips from Foursquare users:</h5><ul class="tips">';
+			var tipData = venue.tips.groups[0];
+			var tipsLimit = (tipData.count < 15) ? tipData.count : 15;
+			for (var i = 0; i < tipsLimit; i++) {
+				var tip = tipData.items[i];
+				if (tip.text.indexOf('burger') >= 0) {
+					tipsHTML += `<li>"${tip.text}" - ${tip.user.firstName}</li>`;
+				}
 			}
-			// Dipsplay Business Hours
-			marker.hours = '<div class="section-head"> Hours:';
-			hours.timeframes.forEach(function (timeframe) {
-				marker.hours +=
-					`<div class="section-sub">${timeframe.days}` +
-					` : ${timeframe.open[0].renderedTime}</div>`;
-			});
-			marker.hours += '</div>';
+			tipsHTML += '</ul>';
+			marker.tips = tipsHTML;
+		},
+		error: function(data) {
+			alert('Ajax error requesting Foursquare data');
 		}
-
-		// Place description data
-		if (venue.description)
-			marker.description = venue.description;
-
-		// Place tips data
-		var tipsHTML = '<h5>Tips from Foursquare users:</h5><ul class="tips">';
-		var tipData = venue.tips.groups[0];
-		var tipsLimit = (tipData.count < 15) ? tipData.count : 15;
-		for (var i = 0; i < tipsLimit; i++) {
-			var tip = tipData.items[i];
-			if (tip.text.indexOf('burger') >= 0) {
-				tipsHTML += `<li>"${tip.text}" - ${tip.user.firstName}</li>`;
-			}
-		}
-		tipsHTML += '</ul>';
-		marker.tips = tipsHTML;
 	});
 };
 
