@@ -81,6 +81,10 @@ var openInfoWindow = function(marker, infowindow) {
 		contentHTML += marker.photo;
 	}
 	contentHTML += title + address;
+	if (marker.website) {
+		contentHTML += '<a href="' + marker.website +
+			'" class="infowindow-link">' + marker.website + '</a>';
+	}
 	if (marker.hours) {
 		contentHTML += marker.hours;
 		contentHTML += marker.isOpen;
@@ -90,6 +94,8 @@ var openInfoWindow = function(marker, infowindow) {
 		contentHTML += marker.description;
 	}
 	if (marker.tips) {
+		contentHTML += '<h5>Tips from <a href="' + marker.fsPage +
+			'" class="infowindow-link">Foursquare</a> users:</h5>';
 		contentHTML += marker.tips;
 	}
 	contentHTML += '</div>';
@@ -100,6 +106,11 @@ var openInfoWindow = function(marker, infowindow) {
 		centerMap();
 	});
 	infowindow.open(map, marker);
+
+	// Handler for inserting hyperlinks dynamically
+	$(".infowindow-link").on('click', function() {
+		window.location.href = this.href;
+	});
 };
 
 // Center map around visible markers
@@ -132,13 +143,23 @@ var getFoursquareData = function(marker) {
 		dataType: 'json',
 		success: function(data) {
 			var venue = data.response.venue;
+			// Place business wesite urls
+			if (venue.url) {
+				marker.website = venue.url;
+			}
+			if (venue.shortUrl) {
+				marker.fsPage = venue.shortUrl;
+			}
+
 			// Place photo data
 			if (venue.bestPhoto) {
 				var picSize = 'height100';
 				var photoURL = venue.bestPhoto.prefix;
 				photoURL += picSize + venue.bestPhoto.suffix;
-				marker.photo = '<img src="' + photoURL +
-					'" class="photo-frame" alt="Foursquare photo of restaurant"/>';
+				marker.photo = '<a href="' + marker.fsPage +
+					'" class="infowindow-link"><img src="' + photoURL +
+					'" class="photo-frame"' +
+					'alt="Foursquare photo of restaurant"/></a>';
 			}
 
 			// Place hours data
@@ -166,17 +187,20 @@ var getFoursquareData = function(marker) {
 				marker.description = venue.description;
 
 			// Place tips data
-			var tipsHTML = '<h5>Tips from Foursquare users:</h5><ul class="tips">';
-			var tipData = venue.tips.groups[0];
-			var tipsLimit = (tipData.count < 15) ? tipData.count : 15;
-			for (var i = 0; i < tipsLimit; i++) {
-				var tip = tipData.items[i];
-				if (tip.text.indexOf('burger') >= 0) {
-					tipsHTML += `<li>"${tip.text}" - ${tip.user.firstName}</li>`;
+			if (venue.tips) {
+				var tipsHTML = '<ul class="tips">';
+				var tipData = venue.tips.groups[0];
+				var tipsLimit = (tipData.count < 15) ? tipData.count : 15;
+				for (var i = 0; i < tipsLimit; i++) {
+					var tip = tipData.items[i];
+					if (tip.text.indexOf('burger') >= 0) {
+						tipsHTML +=
+							`<li>"${tip.text}" - ${tip.user.firstName}</li>`;
+					}
 				}
+				tipsHTML += '</ul>';
+				marker.tips = tipsHTML;
 			}
-			tipsHTML += '</ul>';
-			marker.tips = tipsHTML;
 		},
 		error: function(data) {
 			alert('Ajax error requesting Foursquare data');
