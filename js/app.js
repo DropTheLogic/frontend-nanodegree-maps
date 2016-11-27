@@ -49,7 +49,15 @@ var initMap = function() {
 					}
 					// Add listener to open infoWindow when clicked
 					marker.addListener('click', function() {
+						// Stop any 'clicked' markers from animating
+						markers.forEach(function(marker) {
+							marker().setAnimation(null);
+						})
 						openInfoWindow(this, infoWindow);
+					});
+					// Add listener to animate marker when clicked
+					marker.addListener('click', function() {
+						marker.setAnimation(google.maps.Animation.BOUNCE);
 					});
 					// Add listeners to change marker icon color
 					marker.addListener('mouseover', function() {
@@ -101,8 +109,9 @@ var openInfoWindow = function(marker, infowindow) {
 	contentHTML += '</div>';
 	infowindow.setContent(contentHTML);
 	infowindow.marker = marker;
-	// Add close listener, in order to re-enter map on close
+	// Add close listener, in order to re-enter map on close and stop animations
 	google.maps.event.addListener(infowindow, 'closeclick', function() {
+		marker.setAnimation(null);
 		centerMap();
 	});
 	infowindow.open(map, marker);
