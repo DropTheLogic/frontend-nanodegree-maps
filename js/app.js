@@ -1,8 +1,10 @@
 var map;
 var mapBounds;
+var infoWindow;
 
 // Array of markers for the map
 var markers = [];
+var markersReady = false;
 
 var initMap = function() {
 	map = new google.maps.Map(document.getElementById('map'), {
@@ -11,79 +13,78 @@ var initMap = function() {
 		mapTypeControl: false
 	});
 
-	var infoWindow = new google.maps.InfoWindow();
-	var pService = new google.maps.places.PlacesService(map);
+	infoWindow = new google.maps.InfoWindow();
 	mapBounds = new google.maps.LatLngBounds();
 
 	// Fill markers array with listings
-	// (Use setInterval to parse through locations, so as to not throttle
-	// Google maps API requests too quickly)
-	var i = 0;
-	setInterval(function() {
-		var data = dataListings[i];
-		// Check for more places left and that the ID attribute exists
-		if (i++ < dataListings.length && data.googleID) {
-			// Get details from Google places library service
-			pService.getDetails({'placeId': data.googleID}, function(place, status) {
-				// Make sure Google maps api request is ok
-				if (status === 'OK') {
-					// Create new marker
-					var marker = new google.maps.Marker({
-						position: place.geometry.location,
-						title: place.name,
-						icon: {
-							url: 'img/hamburger-pin-brown.png',
-							scaledSize : new google.maps.Size(55, 36)},
-						animation: google.maps.Animation.DROP,
-						formatted_address: place.formatted_address,
-						foursquareID: data.foursquareID,
-						index: dataListings.indexOf(data)
-					});
-					// Fetch and load Foursquare Data
-					getFoursquareData(marker);
-					// Push marker into array
-					markers[dataListings.indexOf(data)](marker);
-					// If this is the last marker to load, center map
-					if (i === dataListings.length) {
-						centerMap(mapBounds);
-					}
-					// Add listener to open infoWindow when clicked
-					marker.addListener('click', function() {
-						// Stop any 'clicked' markers from animating
-						markers.forEach(function(marker) {
-							marker().setAnimation(null);
-						})
-						openInfoWindow(this, infoWindow);
-					});
-					// Add listener to animate marker when clicked
-					marker.addListener('click', function() {
-						marker.setAnimation(google.maps.Animation.BOUNCE);
-					});
-					// Add listeners to change marker icon color
-					marker.addListener('mouseover', function() {
-						this.setIcon({
-							url: 'img/hamburger-pin-red.png',
-							scaledSize : new google.maps.Size(55, 36)
-						});
-					});
-					marker.addListener('mouseout', function() {
-						this.setIcon({
-							url: 'img/hamburger-pin-brown.png',
-							scaledSize : new google.maps.Size(55, 36)
-						});
-					});
-				} else {
-					alert('Google Maps request failed due to: ' + status);
-				}
+	createMarkers(0);
+};
+
+var createMarkers = function(i) {
+	var data = dataListings[i];
+	var pService = new google.maps.places.PlacesService(map);
+	// Initiate Google maps places request
+	pService.getDetails({'placeId': data.googleID}, function(place, status) {
+		// Make sure Google maps api request is ok
+		if (status === 'OK') {
+			// Create new marker
+			var marker = new Marker(data, place);
+			// Fetch and load Foursquare Data
+			getFoursquareData(marker);
+			// Push marker into array
+			markers[dataListings.indexOf(data)](marker);
+			// Add click listener
+			marker.addListener('click', function() {
+				// Stop any 'clicked' markers from animating
+				markers.forEach(function(marker) {
+					marker().setAnimation(null);
+				});
+				// Animate this marker
+				marker.setAnimation(google.maps.Animation.BOUNCE);
+				// Open infoWindow for this marker
+				openInfoWindow(this, infoWindow);
 			});
+			// Add listeners to change marker icon color
+			marker.addListener('mouseover', function() {
+				this.setIcon({
+					url: 'img/hamburger-pin-red.png',
+					scaledSize : new google.maps.Size(55, 36)
+				});
+			});
+			marker.addListener('mouseout', function() {
+				this.setIcon({
+					url: 'img/hamburger-pin-brown.png',
+					scaledSize : new google.maps.Size(55, 36)
+				});
+			});
+			// Set marker on map
+			marker.setMap(map);
 		}
-	}, 200);
+		else {
+			alert('Google Maps request failed due to: ' + status);
+		}
+
+		// Load next marker
+		if (++i < dataListings.length) {
+			// Use setTimeout to avoid going over google query limit
+			setTimeout(function() {
+				createMarkers(i);
+			}, 200);
+		}
+
+		// If all markers loaded, center map and send ready message
+		else {
+			centerMap(mapBounds);
+			console.log('markers loaded');
+			markersReady = true;
+		}
+	});
 };
 
 // Set formatted content for infoWindow
-var openInfoWindow = function(marker, infowindow) {
-	var title = '<h3 class="info-window-title">' + marker.title + '</h3>';
-	var address = '<div>' + marker.formatted_address + '</div>';
+var openInfoWindow = function(marker) {
+	var title = '<h3 class="info-window-title">' + marker.name() + '</h3>';
+	var address = '<div>' + marker.address() + '</div>';
 	var contentHTML = '<div class="info-window">';
 	if (marker.photo) {
 		contentHTML += marker.photo;
@@ -107,14 +108,14 @@ var openInfoWindow = function(marker, infowindow) {
 		contentHTML += marker.tips;
 	}
 	contentHTML += '</div>';
-	infowindow.setContent(contentHTML);
-	infowindow.marker = marker;
+	infoWindow.setContent(contentHTML);
+	infoWindow.marker = marker;
 	// Add close listener, in order to re-enter map on close and stop animations
-	google.maps.event.addListener(infowindow, 'closeclick', function() {
+	google.maps.event.addListener(infoWindow, 'closeclick', function() {
 		marker.setAnimation(null);
 		centerMap();
 	});
-	infowindow.open(map, marker);
+	infoWindow.open(map, marker);
 
 	// Handler for inserting hyperlinks dynamically
 	$(".infowindow-link").on('click', function() {
@@ -298,6 +299,22 @@ var dataListings = [
 	}
 ];
 
+var Marker = function Marker(data, place) {
+	var marker = new google.maps.Marker({
+		position: data.location,
+		icon: {
+			url: 'img/hamburger-pin-brown.png',
+			scaledSize : new google.maps.Size(55, 36)},
+		animation: google.maps.Animation.DROP,
+		foursquareID: data.foursquareID,
+		googleID: data.googleID,
+		name: ko.observable(place.name),
+		address: ko.observable(place.formatted_address),
+		index: dataListings.indexOf(data)
+	});
+	return marker;
+};
+
 var MapsViewModel = function() {
 	var self = this;
 
@@ -329,14 +346,16 @@ var MapsViewModel = function() {
 
 	// Find if a given listing is within input filter
 	self.isFiltered = function(marker) {
-		if (marker.title && marker.formatted_address) {
-			var name = marker.title.toLowerCase();
-			var address = marker.formatted_address.toLowerCase();
+		if (marker.name && marker.address) {
+			var name = marker.name().toLowerCase();
+			var address = marker.address().toLowerCase();
 			var filter = self.filter().toLowerCase();
 			if (name.indexOf(filter) !== -1 || address.indexOf(filter) !== -1) {
 				// Diplay marker when listing is included in the filter
-				marker.setMap(map);
-				centerMap();
+				if (markersReady) {
+					marker.setMap(map);
+					centerMap();
+				}
 				return true;
 			}
 			// Remove marker when not included in filter
