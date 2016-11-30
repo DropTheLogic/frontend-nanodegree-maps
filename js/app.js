@@ -37,7 +37,9 @@ var createMarkers = function(i) {
 			marker.addListener('click', function() {
 				// Stop any 'clicked' markers from animating
 				markers.forEach(function(marker) {
-					marker().setAnimation(null);
+					if (marker().setAnimation) {
+						marker().setAnimation(null);
+					}
 				});
 				// Animate this marker
 				marker.setAnimation(google.maps.Animation.BOUNCE);
