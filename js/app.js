@@ -4,7 +4,7 @@ var infoWindow;
 
 // Array of markers for the map
 var markers = [];
-var markersReady = false;
+var markersReady = ko.observable(false);
 
 var initMap = function() {
 	map = new google.maps.Map(document.getElementById('map'), {
@@ -76,7 +76,7 @@ var createMarkers = function(i) {
 		else {
 			centerMap(mapBounds);
 			console.log('markers loaded');
-			markersReady = true;
+			markersReady(true);
 		}
 	});
 };
@@ -318,6 +318,23 @@ var Marker = function Marker(data, place) {
 var MapsViewModel = function() {
 	var self = this;
 
+	// String for loading text animation
+	self.loadString = ko.observable('Loading');
+	// Function to animate loading text
+	self.loading = ko.computed(function() {
+		// Use setInterval to add to the ellipses, or to revert text
+		var animate = setInterval(function() {
+			(self.loadString().length < 12) ?
+				self.loadString('.' + self.loadString() + '.') :
+				self.loadString('Loading');
+		}, 750);
+		// When markers are loaded, clearInterval
+		if (markersReady()) {
+			clearInterval(animate);
+		}
+		return self.loadString;
+	}, this);
+
 	// Handle state of slide-out panel for listings
 	self.panelIsOpen = ko.observable(false);
 	self.toggleSidePanel = function() {
@@ -352,7 +369,7 @@ var MapsViewModel = function() {
 			var filter = self.filter().toLowerCase();
 			if (name.indexOf(filter) !== -1 || address.indexOf(filter) !== -1) {
 				// Diplay marker when listing is included in the filter
-				if (markersReady) {
+				if (markersReady()) {
 					marker.setMap(map);
 					centerMap();
 				}

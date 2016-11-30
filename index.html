@@ -93,6 +93,9 @@
 		.list-item:hover h5, .list-item:hover .address {
 			color: #3e2723;
 		}
+		.center {
+			text-align: center;
+		}
 		#map {
 			position: absolute;
 			left: 8px;
@@ -100,6 +103,40 @@
 			top: 90px;
 			bottom: 0px;
 			z-index: -1;
+		}
+		#loading-map {
+			position: relative;
+			top: 100px;
+			left: 0px;
+			text-align: center;
+			font-size: 24px;
+			font-weight: 700;
+			color: #fff;
+			text-shadow:
+				1px 1px 1px #000, -1px -1px 1px #000,
+				-1px 0px 1px #000, 0px -1px 1px #000, 3px 3px 3px #000;
+			line-height: 60px;
+		}
+		.loading-burger {
+			position: relative;
+			margin-left: auto;
+			margin-right: auto;
+			background-image: url('img/hamburger.png');
+			background-size: 152px 100px;
+			width: 152px;
+			height: 100px;
+			opacity: 0.75;
+			-webkit-animation:spin 4s linear infinite;
+			-moz-animation:spin 4s linear infinite;
+			animation:spin 4s linear infinite;
+		}
+		@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+		@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+		@keyframes spin {
+			100% {
+				-webkit-transform: rotate(360deg);
+				transform:rotate(360deg);
+			}
 		}
 		.info-window {
 			max-width: 250px;
@@ -173,6 +210,9 @@
 			#map {
 				left: 218px;
 			}
+			#loading-map {
+				left: 218px;
+			}
 		}
 		@media screen and (min-width: 920px) {
 			#side-panel {
@@ -214,9 +254,16 @@
 				<div class="address" data-bind="text: $data.address"></div>
 			</div>
 		</div>
+		<div class="list-item center" data-bind="visible: !markersReady()">
+			<h5 data-bind="text: loadString"></h5>
+		</div>
 	</div>
 
 	<div id="map" data-bind="click: closeSidePanel"></div>
+	<div id="loading-map" data-bind="visible: !markersReady()">
+		<div class="loading-burger"></div>
+		<div data-bind="text: loadString"></div>
+	</div>
 
 	<script src="js/knockout-3.4.0.js"></script>
 	<script src="js/jquery-3.1.1.min.js"></script>
