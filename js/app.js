@@ -170,7 +170,7 @@ var getFoursquareData = function(marker) {
 				photoURL += picSize + venue.bestPhoto.suffix;
 				marker.photo = '<a href="' + marker.fsPage +
 					'" class="infowindow-link"><img src="' + photoURL +
-					'" class="photo-frame"' +
+					'" class="photo-frame" width="110" height="110" ' +
 					'alt="Foursquare photo of restaurant"/></a>';
 			}
 
