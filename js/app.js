@@ -6,6 +6,89 @@ var infoWindow;
 var markers = [];
 var markersReady = ko.observable(false);
 
+// Array of venue location data
+var dataListings = [
+	{ name: 'Umami Burger',
+	  address: '158 N 4th St, Brooklyn, NY',
+	  location: {lat: 40.71588719999999, lng: -73.9592588},
+	  googleID: 'ChIJESPDHl5ZwokRcj6FbVLbuew',
+	  foursquareID: '54233f50498e70470c230a9e'
+	},
+	{ name: 'Blue Collar',
+	  address: '160 Havemeyer St, Brooklyn, NY',
+	  location: {lat: 40.7114917, lng: -73.9578698},
+	  googleID: 'ChIJqzsHPOBbwokRx_MN2OEJ6BM',
+	  foursquareID: '4ffe3889e4b01d5de4d4a81a'
+	},
+	{ name: 'DuMont Burger',
+	  address: '314 Bedford Ave, Brooklyn, NY',
+	  location: {lat: 40.7136831, lng: -73.9621056},
+	  googleID: 'ChIJ10LYAt9bwokRpENP2An7El8',
+	  foursquareID: '439308daf964a520712b1fe3'
+	},
+	{ name: 'Peter Luger Steak House',
+	  address: '178 Broadway, Brooklyn, NY',
+	  location: {lat: 40.709819, lng: -73.962467},
+	  googleID: 'ChIJR_bK295bwokR8gM6QgEdmkY',
+	  foursquareID: '3fd66200f964a5209beb1ee3'
+	},
+	{ name: 'Diner',
+	  address: '85 Broadway, Brooklyn, NY',
+	  location: {lat: 40.7106886, lng: -73.9655691},
+	  googleID: 'ChIJvzYmKtlbwokRHye6SmfknDM',
+	  foursquareID: '3fd66200f964a5207feb1ee3'
+	},
+	{ name: "Pop's Burger",
+	  address: '167 N 8th St, Brooklyn, NY',
+	  location: {lat: 40.7181769, lng: -73.95702349999999},
+	  googleID: 'ChIJJd87tF1ZwokRztj3_6guix4',
+	  foursquareID: '4a23d6c0f964a520dd7d1fe3'
+	},
+	{ name: 'Ramen Burger',
+	  address: '90 Kent Ave, Brooklyn, NY',
+	  location: {lat: 40.7214853, lng: -73.9621174},
+	  googleID: 'ChIJTV4tpWdZwokRtZZtuDBZjTY',
+	  foursquareID: '5532b4a8498ee29a1298a6c3'
+	},
+	{ name: 'The Burger Guru',
+	  address: '98 Berry St, Brooklyn, NY',
+	  location: {lat: 40.71917699999999, lng: -73.958643},
+	  googleID: 'ChIJyYFam11ZwokRWMaL1wvAFlo',
+	  foursquareID: '4df41f33aeb7170aa2f3adf4'
+	},
+	{ name: 'Allswell',
+	  address: '124 Bedford Ave, Brooklyn, NY',
+	  location: {lat: 40.7196568, lng: -73.9559515},
+	  googleID: 'ChIJa7Bx-1xZwokRLAsf1yepN3Y',
+	  foursquareID: '4e18c39da8097d08b23ac35d'
+	},
+	{ name: 'The Commodore',
+	  address: '366 Metropolitan Ave, Brooklyn, NY',
+	  location: {lat: 40.7139371, lng: -73.9558631},
+	  googleID: 'ChIJpwY0A19ZwokR3XNKVbz8Lqg',
+	  foursquareID: '4bd254bd77b29c743da18e82'
+	},
+	{ name: "Walter Foods",
+	  address: '253 Grand St, Brooklyn, NY',
+	  location: {lat: 40.713555, lng: -73.958551},
+	  googleID: 'ChIJIa3vw19ZwokR6gAqP0kXg4A',
+	  foursquareID: '49c3df11f964a52081561fe3'
+	},
+	{ name: 'Cow & Clover',
+	  address: '291 Kent Ave, Brooklyn, NY',
+	  location: {lat: 40.71452780000001, lng: -73.9665327},
+	  googleID: 'ChIJresRPmJZwokRGNjAHuO7CQw',
+	  foursquareID: '5407a76e498e743eaa26f8a4'
+	},
+	{ name: 'Checkers',
+	  address: '277 Broadway, Brooklyn, NY',
+	  location: {lat: 40.7088007, lng: -73.9586784},
+	  googleID: 'ChIJ-_HAkOBbwokRiKV330CJkBU',
+	  foursquareID: '4c9bd1140313370443af4fd5'
+	}
+];
+
+// Google Maps callback, create map object
 var initMap = function() {
 	map = new google.maps.Map(document.getElementById('map'), {
 		center: {lat: 40.713555, lng: -73.958551},
@@ -20,6 +103,33 @@ var initMap = function() {
 	createMarkers(0);
 };
 
+/**
+ * Returns Google Maps marker object, along with data from dataListings array.
+ * @constructor
+ * @param {object} data - Single data object from the dataListings array
+ * @param {object} place - Place data object returned from google maps api
+ */
+var Marker = function Marker(data, place) {
+	var marker = new google.maps.Marker({
+		position: data.location,
+		icon: {
+			url: 'img/hamburger-pin-brown.png',
+			scaledSize : new google.maps.Size(55, 36)},
+		animation: google.maps.Animation.DROP,
+		foursquareID: data.foursquareID,
+		googleID: data.googleID,
+		name: ko.observable(place.name),
+		address: ko.observable(place.formatted_address),
+		index: dataListings.indexOf(data)
+	});
+	return marker;
+};
+
+/**
+ * Creates and pushes a Google Maps marker object into markers array.
+ * Calls itself until whole array dataListings array is parsed.
+ * @param {integer} i - Used to iterate through data array recursevly.
+ */
 var createMarkers = function(i) {
 	var data = dataListings[i];
 	var pService = new google.maps.places.PlacesService(map);
@@ -66,7 +176,7 @@ var createMarkers = function(i) {
 			alert('Google Maps request failed due to: ' + status);
 		}
 
-		// Load next marker
+		// Itertate to next dataListing, create and push next marker
 		if (++i < dataListings.length) {
 			// Use setTimeout to avoid going over google query limit
 			setTimeout(function() {
@@ -76,68 +186,17 @@ var createMarkers = function(i) {
 
 		// If all markers loaded, center map and send ready message
 		else {
-			centerMap(mapBounds);
+			centerMap();
 			console.log('markers loaded');
 			markersReady(true);
 		}
 	});
 };
 
-// Set formatted content for infoWindow
-var openInfoWindow = function(marker) {
-	var title = '<h3 class="info-window-title">' + marker.name() + '</h3>';
-	var address = '<div>' + marker.address() + '</div>';
-	var contentHTML = '<div class="info-window">';
-	if (marker.photo) {
-		contentHTML += marker.photo;
-	}
-	contentHTML += title + address;
-	if (marker.website) {
-		contentHTML += '<a href="' + marker.website +
-			'" class="infowindow-link">' + marker.website + '</a>';
-	}
-	if (marker.hours) {
-		contentHTML += marker.hours;
-		contentHTML += marker.isOpen;
-	}
-	contentHTML += '<hr />';
-	if (marker.description) {
-		contentHTML += marker.description;
-	}
-	if (marker.tips) {
-		contentHTML += '<h5>Tips from <a href="' + marker.fsPage +
-			'" class="infowindow-link">Foursquare</a> users:</h5>';
-		contentHTML += marker.tips;
-	}
-	contentHTML += '</div>';
-	infoWindow.setContent(contentHTML);
-	infoWindow.marker = marker;
-	// Add close listener, in order to re-enter map on close and stop animations
-	google.maps.event.addListener(infoWindow, 'closeclick', function() {
-		marker.setAnimation(null);
-		centerMap();
-	});
-	infoWindow.open(map, marker);
-
-	// Handler for inserting hyperlinks dynamically
-	$(".infowindow-link").on('click', function() {
-		window.location.href = this.href;
-	});
-};
-
-// Center map around visible markers
-var centerMap = function() {
-	// Extend map bounds to include visible markers
-	markers.forEach(function(marker) {
-		if (marker().position) {
-			mapBounds.extend(marker().position);
-		}
-	});
-	// Fit map to bounds
-	map.fitBounds(mapBounds);
-};
-
-// Get Foursquare data and place formatted data inside marker
+/**
+ * Requests Foursquare data and places formatted data inside given marker
+ * @param {object} marker - Marker object to add additional properties to
+ */
 var getFoursquareData = function(marker) {
 	// Create request url string
 	var url = 'https://api.foursquare.com/v2/venues/' + marker.foursquareID;
@@ -220,101 +279,62 @@ var getFoursquareData = function(marker) {
 	});
 };
 
-var dataListings = [
-	{ name: 'Umami Burger',
-	  address: '158 N 4th St, Brooklyn, NY',
-	  location: {lat: 40.71588719999999, lng: -73.9592588},
-	  googleID: 'ChIJESPDHl5ZwokRcj6FbVLbuew',
-	  foursquareID: '54233f50498e70470c230a9e'
-	},
-	{ name: 'Blue Collar',
-	  address: '160 Havemeyer St, Brooklyn, NY',
-	  location: {lat: 40.7114917, lng: -73.9578698},
-	  googleID: 'ChIJqzsHPOBbwokRx_MN2OEJ6BM',
-	  foursquareID: '4ffe3889e4b01d5de4d4a81a'
-	},
-	{ name: 'DuMont Burger',
-	  address: '314 Bedford Ave, Brooklyn, NY',
-	  location: {lat: 40.7136831, lng: -73.9621056},
-	  googleID: 'ChIJ10LYAt9bwokRpENP2An7El8',
-	  foursquareID: '439308daf964a520712b1fe3'
-	},
-	{ name: 'Peter Luger Steak House',
-	  address: '178 Broadway, Brooklyn, NY',
-	  location: {lat: 40.709819, lng: -73.962467},
-	  googleID: 'ChIJR_bK295bwokR8gM6QgEdmkY',
-	  foursquareID: '3fd66200f964a5209beb1ee3'
-	},
-	{ name: 'Diner',
-	  address: '85 Broadway, Brooklyn, NY',
-	  location: {lat: 40.7106886, lng: -73.9655691},
-	  googleID: 'ChIJvzYmKtlbwokRHye6SmfknDM',
-	  foursquareID: '3fd66200f964a5207feb1ee3'
-	},
-	{ name: "Pop's Burger",
-	  address: '167 N 8th St, Brooklyn, NY',
-	  location: {lat: 40.7181769, lng: -73.95702349999999},
-	  googleID: 'ChIJJd87tF1ZwokRztj3_6guix4',
-	  foursquareID: '4a23d6c0f964a520dd7d1fe3'
-	},
-	{ name: 'Ramen Burger',
-	  address: '90 Kent Ave, Brooklyn, NY',
-	  location: {lat: 40.7214853, lng: -73.9621174},
-	  googleID: 'ChIJTV4tpWdZwokRtZZtuDBZjTY',
-	  foursquareID: '5532b4a8498ee29a1298a6c3'
-	},
-	{ name: 'The Burger Guru',
-	  address: '98 Berry St, Brooklyn, NY',
-	  location: {lat: 40.71917699999999, lng: -73.958643},
-	  googleID: 'ChIJyYFam11ZwokRWMaL1wvAFlo',
-	  foursquareID: '4df41f33aeb7170aa2f3adf4'
-	},
-	{ name: 'Allswell',
-	  address: '124 Bedford Ave, Brooklyn, NY',
-	  location: {lat: 40.7196568, lng: -73.9559515},
-	  googleID: 'ChIJa7Bx-1xZwokRLAsf1yepN3Y',
-	  foursquareID: '4e18c39da8097d08b23ac35d'
-	},
-	{ name: 'The Commodore',
-	  address: '366 Metropolitan Ave, Brooklyn, NY',
-	  location: {lat: 40.7139371, lng: -73.9558631},
-	  googleID: 'ChIJpwY0A19ZwokR3XNKVbz8Lqg',
-	  foursquareID: '4bd254bd77b29c743da18e82'
-	},
-	{ name: "Walter Foods",
-	  address: '253 Grand St, Brooklyn, NY',
-	  location: {lat: 40.713555, lng: -73.958551},
-	  googleID: 'ChIJIa3vw19ZwokR6gAqP0kXg4A',
-	  foursquareID: '49c3df11f964a52081561fe3'
-	},
-	{ name: 'Cow & Clover',
-	  address: '291 Kent Ave, Brooklyn, NY',
-	  location: {lat: 40.71452780000001, lng: -73.9665327},
-	  googleID: 'ChIJresRPmJZwokRGNjAHuO7CQw',
-	  foursquareID: '5407a76e498e743eaa26f8a4'
-	},
-	{ name: 'Checkers',
-	  address: '277 Broadway, Brooklyn, NY',
-	  location: {lat: 40.7088007, lng: -73.9586784},
-	  googleID: 'ChIJ-_HAkOBbwokRiKV330CJkBU',
-	  foursquareID: '4c9bd1140313370443af4fd5'
+/*
+ * Opens Google Maps infoWindow for given marker by parsing and formatting data.
+ * @param {object} marker - Supplies data for infoWindow.
+ */
+var openInfoWindow = function(marker) {
+	var title = '<h3 class="info-window-title">' + marker.name() + '</h3>';
+	var address = '<div>' + marker.address() + '</div>';
+	var contentHTML = '<div class="info-window">';
+	if (marker.photo) {
+		contentHTML += marker.photo;
 	}
-];
-
-var Marker = function Marker(data, place) {
-	var marker = new google.maps.Marker({
-		position: data.location,
-		icon: {
-			url: 'img/hamburger-pin-brown.png',
-			scaledSize : new google.maps.Size(55, 36)},
-		animation: google.maps.Animation.DROP,
-		foursquareID: data.foursquareID,
-		googleID: data.googleID,
-		name: ko.observable(place.name),
-		address: ko.observable(place.formatted_address),
-		index: dataListings.indexOf(data)
+	contentHTML += title + address;
+	if (marker.website) {
+		contentHTML += '<a href="' + marker.website +
+			'" class="infowindow-link">' + marker.website + '</a>';
+	}
+	if (marker.hours) {
+		contentHTML += marker.hours;
+		contentHTML += marker.isOpen;
+	}
+	contentHTML += '<hr />';
+	if (marker.description) {
+		contentHTML += marker.description;
+	}
+	if (marker.tips) {
+		contentHTML += '<h5>Tips from <a href="' + marker.fsPage +
+			'" class="infowindow-link">Foursquare</a> users:</h5>';
+		contentHTML += marker.tips;
+	}
+	contentHTML += '</div>';
+	infoWindow.setContent(contentHTML);
+	infoWindow.marker = marker;
+	// Add close listener, in order to re-enter map on close and stop animations
+	google.maps.event.addListener(infoWindow, 'closeclick', function() {
+		marker.setAnimation(null);
+		centerMap();
 	});
-	return marker;
+
+	infoWindow.open(map, marker);
+
+	// Handler for inserting hyperlinks dynamically
+	$(".infowindow-link").on('click', function() {
+		window.location.href = this.href;
+	});
+};
+
+// Centers map around visible markers
+var centerMap = function() {
+	// Extend map bounds to include visible markers
+	markers.forEach(function(marker) {
+		if (marker().position) {
+			mapBounds.extend(marker().position);
+		}
+	});
+	// Fit map to bounds
+	map.fitBounds(mapBounds);
 };
 
 var MapsViewModel = function() {
@@ -322,7 +342,7 @@ var MapsViewModel = function() {
 
 	// String for loading text animation
 	self.loadString = ko.observable('Loading');
-	// Function to animate loading text
+	// Animates loading text
 	self.loading = ko.computed(function() {
 		// Use setInterval to add to the ellipses, or to revert text
 		var animate = setInterval(function() {
@@ -363,7 +383,7 @@ var MapsViewModel = function() {
 
 	self.filter = ko.observable('');
 
-	// Find if a given listing is within input filter
+	// Finds if a given listing is within input filter
 	self.isFiltered = function(marker) {
 		if (marker.name && marker.address) {
 			var name = marker.name().toLowerCase();
@@ -385,7 +405,7 @@ var MapsViewModel = function() {
 		return false;
 	};
 
-	// Clear filter if ESC is pressed
+	// Clears filter if ESC is pressed
 	self.esc = function(data, event) {
 		if (event && event.keyCode === 27) {
 			self.filter('');
