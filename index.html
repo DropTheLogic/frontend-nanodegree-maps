@@ -239,15 +239,15 @@
 		<div id="filter">
 			<div>Filter list:</div>
 			<input id="filter-name" type="text"
-				   name="filter-name" placeholder="e.g. 'DuMont'"
+				   name="filter-name" placeholder="e.g. 'DuMont' or 'Broadway'"
 				   data-bind="textInput: filter, event: {keydown: $root.esc}" />
 			<div data-bind="text: filterCountString"></div>
 		</div>
-		<div id="listings" data-bind="foreach: markers">
+		<div id="listings" data-bind="foreach: listings">
 			<div class="list-item" data-bind="
 				visible: $root.isFiltered($data),
 				click: function() {
-					new google.maps.event.trigger($data, 'click');
+					new google.maps.event.trigger(markers[$data.index], 'click');
 					$root.toggleSidePanel();
 				}">
 				<h5 data-bind="text: $data.name"></h5>

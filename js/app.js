@@ -6,6 +6,9 @@ var infoWindow;
 var markers = [];
 var markersReady = ko.observable(false);
 
+// Array of listings for list view of locations
+var listings = [];
+
 // Array of venue location data
 var dataListings = [
 	{ name: 'Umami Burger',
@@ -118,8 +121,8 @@ var Marker = function Marker(data, place) {
 		animation: google.maps.Animation.DROP,
 		foursquareID: data.foursquareID,
 		googleID: data.googleID,
-		name: ko.observable(place.name),
-		address: ko.observable(place.formatted_address),
+		name: place.name,
+		address: place.formatted_address,
 		index: dataListings.indexOf(data)
 	});
 	return marker;
@@ -142,13 +145,13 @@ var createMarkers = function(i) {
 			// Fetch and load Foursquare Data
 			getFoursquareData(marker);
 			// Push marker into array
-			markers[dataListings.indexOf(data)](marker);
+			markers[dataListings.indexOf(data)] = marker;
 			// Add click listener
 			marker.addListener('click', function() {
 				// Stop any 'clicked' markers from animating
 				markers.forEach(function(marker) {
-					if (marker().setAnimation) {
-						marker().setAnimation(null);
+					if (marker.setAnimation) {
+						marker.setAnimation(null);
 					}
 				});
 				// Animate this marker
@@ -171,6 +174,8 @@ var createMarkers = function(i) {
 			});
 			// Set marker on map
 			marker.setMap(map);
+			// Send marker data to listings array
+			loadMarkerIntoListing(marker);
 		}
 		else {
 			alert('Google Maps request failed due to: ' + status);
@@ -181,7 +186,7 @@ var createMarkers = function(i) {
 			// Use setTimeout to avoid going over google query limit
 			setTimeout(function() {
 				createMarkers(i);
-			}, 200);
+			}, 100);
 		}
 
 		// If all markers loaded, center map and send ready message
@@ -284,8 +289,8 @@ var getFoursquareData = function(marker) {
  * @param {object} marker - Supplies data for infoWindow.
  */
 var openInfoWindow = function(marker) {
-	var title = '<h3 class="info-window-title">' + marker.name() + '</h3>';
-	var address = '<div>' + marker.address() + '</div>';
+	var title = '<h3 class="info-window-title">' + marker.name + '</h3>';
+	var address = '<div>' + marker.address + '</div>';
 	var contentHTML = '<div class="info-window">';
 	if (marker.photo) {
 		contentHTML += marker.photo;
@@ -329,12 +334,18 @@ var openInfoWindow = function(marker) {
 var centerMap = function() {
 	// Extend map bounds to include visible markers
 	markers.forEach(function(marker) {
-		if (marker().position) {
-			mapBounds.extend(marker().position);
+		if (marker.position) {
+			mapBounds.extend(marker.position);
 		}
 	});
 	// Fit map to bounds
 	map.fitBounds(mapBounds);
+};
+
+// Loads given marker data into list view listing
+var loadMarkerIntoListing = function(marker) {
+	listings[marker.index].name(marker.name);
+	listings[marker.index].address(marker.address);
 };
 
 var MapsViewModel = function() {
@@ -376,30 +387,38 @@ var MapsViewModel = function() {
 		return (self.panelIsOpen()) ? 'tab-open' : 'tab-closed';
 	}, this);
 
-	// Load blank observables into markers array
+	// Initialize listings array with objects containing observables
 	for (var i = 0; i < dataListings.length; i++) {
-		markers[i] = ko.observable('');
+		listings[i] = {
+			'index': i,
+			'name': ko.observable(''),
+			'address': ko.observable('')
+		};
 	}
 
 	self.filter = ko.observable('');
 
-	// Finds if a given listing is within input filter
-	self.isFiltered = function(marker) {
-		if (marker.name && marker.address) {
-			var name = marker.name().toLowerCase();
-			var address = marker.address().toLowerCase();
+	/*
+	 * Returns true if a given listing is within the self.filter observable.
+	 * Also displays/hides corresponding map markers for any filtered listings.
+	 * @param {object} listing - Object with attributes to test against a filter
+	 */
+	self.isFiltered = function(listing) {
+		if (listing.name() && listing.address()) {
+			var name = listing.name().toLowerCase();
+			var address = listing.address().toLowerCase();
 			var filter = self.filter().toLowerCase();
 			if (name.indexOf(filter) !== -1 || address.indexOf(filter) !== -1) {
-				// Diplay marker when listing is included in the filter
+				// Diplay corresponding marker if listing is within the filter
 				if (markersReady()) {
-					marker.setMap(map);
+					markers[listing.index].setMap(map);
 					centerMap();
 				}
 				return true;
 			}
-			// Remove marker when not included in filter
+			// Remove marker if not included in filter
 			else {
-				marker.setMap(null);
+				markers[listing.index].setMap(null);
 			}
 		}
 		return false;
@@ -418,8 +437,8 @@ var MapsViewModel = function() {
 	// Counts number of results based on filter, outputs string based on count
 	self.filterCountString = ko.computed(function() {
 		var count = 0;
-		markers.forEach(function(marker) {
-			if (self.isFiltered(marker()))
+		listings.forEach(function(listing) {
+			if (self.isFiltered(listing))
 				count++;
 		});
 		return '(' + count + ((count === 1) ? ' place' : ' places') + ' found)';
