@@ -1,6 +1,7 @@
 var map;
 var mapBounds;
 var infoWindow;
+var foursquareError;
 
 // Array of markers for the map
 var markers = [];
@@ -295,9 +296,20 @@ var getFoursquareData = function(marker) {
 			}
 		},
 		error: function(data) {
-			alert('There was an error requesting Foursquare data, ' +
+			// If no previous errors, start an error message
+			if (!foursquareError) {
+				foursquareError = 'There was an error requesting Foursquare data, ' +
 				"so unfortunately you won't see too much info " +
-				'about ' + marker.name + '. Sorry!');
+				'about the following place(s):\n' + '* ' + marker.name + '\n';
+			}
+			// Otherwise, add this location error to the message
+			else {
+				foursquareError += ('* ' + marker.name + '\n');
+			}
+			// If all places have been parsed, display error message
+			if (marker.index === dataListings.length - 1) {
+				alert(foursquareError);
+			}
 		}
 	});
 };
