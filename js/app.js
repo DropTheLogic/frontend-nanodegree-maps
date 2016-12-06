@@ -268,7 +268,8 @@ var getFoursquareData = function(marker) {
 
 			// Place rating info
 			if (venue.rating) {
-				var color = getRatingClass(venue.rating);
+				var color = (venue.rating >= 8.7) ? 
+					'great' : ((venue.rating >= 7) ? 'good' : 'fair');
 				marker.rating = '<a href="' + marker.fsPage +
 					'" class="infowindow-link"><div class="rating ' +
 					color + '">' + venue.rating.toFixed(1) + '</div>' +
@@ -313,15 +314,6 @@ var getFoursquareData = function(marker) {
 		}
 	});
 };
-
-// Returns class name given numerical rating
-var getRatingClass = function(rating) {
-	if (rating >= 8.7) {
-		return 'great';
-	} else if (rating >= 7)
-		return 'good';
-	return 'fair';
-}
 
 /*
  * Opens Google Maps infoWindow for given marker by parsing and formatting data.
