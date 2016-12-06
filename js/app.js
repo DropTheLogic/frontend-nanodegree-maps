@@ -186,7 +186,7 @@ var createMarkers = function(i) {
 			// Use setTimeout to avoid going over google query limit
 			setTimeout(function() {
 				createMarkers(i);
-			}, 100);
+			}, 150);
 		}
 
 		// If all markers loaded, center map and send ready message
@@ -258,6 +258,15 @@ var getFoursquareData = function(marker) {
 				marker.hours += '</div>';
 			}
 
+			// Place rating info
+			if (venue.rating) {
+				var color = getRatingClass(venue.rating);
+				marker.rating = '<a href="' + marker.fsPage +
+					'" class="infowindow-link"><div class="rating ' +
+					color + '">' + venue.rating.toFixed(1) + '</div>' +
+					'<div class="rating-text">Foursquare<br>Rating</div></a>';
+			}
+
 			// Place description data
 			if (venue.description)
 				marker.description = venue.description;
@@ -284,6 +293,15 @@ var getFoursquareData = function(marker) {
 	});
 };
 
+// Returns class name given numerical rating
+var getRatingClass = function(rating) {
+	if (rating >= 8.7) {
+		return 'great';
+	} else if (rating >= 7)
+		return 'good';
+	return 'fair';
+}
+
 /*
  * Opens Google Maps infoWindow for given marker by parsing and formatting data.
  * @param {object} marker - Supplies data for infoWindow.
@@ -300,10 +318,16 @@ var openInfoWindow = function(marker) {
 		contentHTML += '<a href="' + marker.website +
 			'" class="infowindow-link">' + marker.website + '</a>';
 	}
+	contentHTML += '<div class="section"><div class="col-75">';
 	if (marker.hours) {
 		contentHTML += marker.hours;
 		contentHTML += marker.isOpen;
 	}
+	contentHTML += '</div><div class="col-25">';
+	if (marker.rating) {
+		contentHTML += marker.rating;
+	}
+	contentHTML += '</div></div>';
 	contentHTML += '<hr />';
 	if (marker.description) {
 		contentHTML += marker.description;
