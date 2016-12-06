@@ -200,6 +200,11 @@ var createMarkers = function(i) {
 	});
 };
 
+// Error handling for google maps api load error
+var googleMapsError = function() {
+	alert('Error reaching Google Maps! Try reloading or ensuring you have internet connectivity.');
+};
+
 /**
  * Requests Foursquare data and places formatted data inside given marker
  * @param {object} marker - Marker object to add additional properties to
