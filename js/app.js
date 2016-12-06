@@ -41,7 +41,7 @@ var dataListings = [
 	  googleID: 'ChIJvzYmKtlbwokRHye6SmfknDM',
 	  foursquareID: '3fd66200f964a5207feb1ee3'
 	},
-	{ name: "Pop's Burger",
+	{ name: "Pops",
 	  address: '167 N 8th St, Brooklyn, NY',
 	  location: {lat: 40.7181769, lng: -73.95702349999999},
 	  googleID: 'ChIJJd87tF1ZwokRztj3_6guix4',
@@ -178,7 +178,9 @@ var createMarkers = function(i) {
 			loadMarkerIntoListing(marker);
 		}
 		else {
-			alert('Google Maps request failed due to: ' + status);
+			alert('Google Maps request failed due to: ' + status +
+				". So there won't be a marker for " + dataListings[i].name +
+				'. Sorry!');
 		}
 
 		// Itertate to next dataListing, create and push next marker
@@ -288,7 +290,9 @@ var getFoursquareData = function(marker) {
 			}
 		},
 		error: function(data) {
-			alert('Ajax error requesting Foursquare data');
+			alert('There was an error requesting Foursquare data, ' +
+				"so unfortunately you won't see too much info " +
+				'about ' + marker.name + '. Sorry!');
 		}
 	});
 };
