@@ -175,6 +175,7 @@ var createMarkers = function(i) {
 			});
 			// Set marker on map
 			marker.setMap(map);
+			marker.setVisible(true);
 			// Send marker data to listings array
 			loadMarkerIntoListing(marker);
 		}
@@ -448,14 +449,14 @@ var MapsViewModel = function() {
 			if (name.indexOf(filter) !== -1 || address.indexOf(filter) !== -1) {
 				// Diplay corresponding marker if listing is within the filter
 				if (markersReady()) {
-					markers[listing.index].setMap(map);
+					markers[listing.index].setVisible(true);
 					centerMap();
 				}
 				return true;
 			}
 			// Remove marker if not included in filter
 			else {
-				markers[listing.index].setMap(null);
+				markers[listing.index].setVisible(false);
 			}
 		}
 		return false;
