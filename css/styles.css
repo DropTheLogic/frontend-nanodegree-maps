@@ -1,0 +1,250 @@
+body {
+	font-family: 'Courier New', monospace;
+	margin: 0px;
+	background: #d7ccc8;
+}
+header {
+	text-align: center;
+}
+header h1 {
+	width: 300px;
+	margin-top: 2px;
+	margin-bottom: 2px;
+	color: #3e2723;
+	text-transform: uppercase;
+	transform: rotate(-1deg);
+	display: inline-block;
+	vertical-align: top;
+}
+#subheader {
+	display: none;
+}
+#side-panel {
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	width: 218px;
+	background: #795548;
+	color: #d7ccc8;
+}
+.side-panel-closed {
+	left: -210px;
+	overflow-y: hidden;
+}
+.side-panel-open {
+	left: 0px;
+	overflow-y: auto;
+	box-shadow: 0px 2px 8px #3e2723;
+}
+#side-panel-tab {
+	position: fixed;
+	top: 0px;
+	background: #795548;
+	padding: 10px 12px;
+	border-radius: 0px 0px 12px 0px;
+	color: #d7ccc8;
+	box-shadow: 0px 2px 8px #3e2723;
+	margin: 0px;
+}
+.tab-open {
+	left: 218px;
+}
+.tab-closed {
+	left: 8px;
+}
+#side-panel h3 {
+	margin: 0px;
+	padding: 8px;
+	text-align: center;
+}
+#filter {
+	padding: 8px;
+	font-size: 12px;
+	text-align: center;
+	box-shadow: 0px 2px 4px #3e2723;
+}
+#filter-name {
+	width: 178px;
+}
+.list-item {
+	padding: 8px 8px 12px 8px;
+}
+.list-item:hover {
+	background: #bcaaa4;
+}
+.list-item h5 {
+	margin: 8px 2px 0px;
+}
+.address {
+	font-size: 10px;
+	font-style: italic;
+}
+.list-item:hover h5, .list-item:hover .address {
+	color: #3e2723;
+}
+.center {
+	text-align: center;
+}
+#map {
+	position: absolute;
+	left: 8px;
+	right: 0px;
+	top: 90px;
+	bottom: 0px;
+	z-index: -1;
+}
+#loading-map {
+	position: relative;
+	top: 100px;
+	left: 0px;
+	text-align: center;
+	font-size: 24px;
+	font-weight: 700;
+	color: #fff;
+	text-shadow:
+		1px 1px 1px #000, -1px -1px 1px #000,
+		-1px 0px 1px #000, 0px -1px 1px #000, 3px 3px 3px #000;
+	line-height: 60px;
+}
+.loading-burger {
+	position: relative;
+	margin-left: auto;
+	margin-right: auto;
+	background-image: url('../img/hamburger.png');
+	background-size: 152px 100px;
+	width: 152px;
+	height: 100px;
+	opacity: 0.75;
+	-webkit-animation:spin 4s linear infinite;
+	-moz-animation:spin 4s linear infinite;
+	animation:spin 4s linear infinite;
+}
+@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin {
+	100% {
+		-webkit-transform: rotate(360deg);
+		transform:rotate(360deg);
+	}
+}
+.info-window {
+	max-width: 250px;
+	padding-right: 12px;
+}
+.info-window-title {
+	font-size: 1.5em;
+	margin: 5px 0px;
+}
+.photo-frame {
+	margin: 2px;
+	border: 5px solid #eee;
+	box-shadow: 1px 1px 0px #999;
+}
+.section {
+	width: 100%;
+}
+.section-head {
+	padding: 10px 0px 5px;
+	font-weight: 700;
+}
+.section-sub {
+	font-size: 10px;
+	font-weight: 100;
+}
+.col-75 {
+	width: 75%;
+	display: inline-block;
+}
+.col-25 {
+	width: 25%;
+	display: inline-block;
+}
+.open-now {
+	font-weight: 700;
+	color: red;
+	text-transform: uppercase;
+	font-size: 12px;
+}
+.closed {
+	color: grey;
+	font-size: 8px;
+	text-transform: uppercase;
+}
+.rating {
+	color: black;
+	font-weight: 700;
+	font-size: 16px;
+	float: right;
+	padding: 6px;
+	margin-top: 6px;
+	border: 1px solid #000;
+	border-radius: 2px;
+}
+.great {
+	background-color: green;
+	color: #fff;
+	text-shadow: 1px 1px #000;
+}
+.good {
+	background-color: #ff9900;
+}
+.fair {
+	background-color: #fb1313;
+}
+a .rating-text {
+	font-size: 6px;
+	text-align: right;
+	color: black;
+}
+.tips li {
+	font-style: italic;
+	padding: 5px;
+}
+@media screen and (min-width: 400px) {
+	#subheader {
+		display: block;
+		position: relative;
+	}
+	#map {
+		top: 108px;
+	}
+}
+@media screen and (min-width: 638px) {
+	.logo {
+		background-image: url('../img/hamburger.png');
+		background-size: 152px 100px;
+		width: 152px;
+		height: 100px;
+		display: inline-block;
+	}
+	#subheader {
+		top: -27px;
+	}
+}
+@media screen and (min-width: 720px) {
+	#side-panel {
+		top: 108px;
+	}
+	.side-panel-closed {
+		left: 0px;
+		overflow-y: auto;
+		box-shadow: 0px 2px 8px #3e2723;
+	}
+	#side-panel-tab {
+		display: none;
+	}
+	#map {
+		left: 218px;
+	}
+	#loading-map {
+		left: 218px;
+	}
+}
+@media screen and (min-width: 920px) {
+	#side-panel {
+		width: 25%;
+	}
+	#map {
+		left: 25%;
+	}
+}

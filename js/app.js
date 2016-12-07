@@ -268,7 +268,7 @@ var getFoursquareData = function(marker) {
 
 			// Place rating info
 			if (venue.rating) {
-				var color = (venue.rating >= 8.7) ? 
+				var color = (venue.rating >= 8.7) ?
 					'great' : ((venue.rating >= 7) ? 'good' : 'fair');
 				marker.rating = '<a href="' + marker.fsPage +
 					'" class="infowindow-link"><div class="rating ' +
