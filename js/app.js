@@ -105,6 +105,11 @@ var initMap = function() {
 
 	// Fill markers array with listings
 	createMarkers(0);
+
+	// Listener to make sure markers stay visible on window re-size
+	google.maps.event.addDomListener(window, 'resize', function() {
+		map.fitBounds(mapBounds);
+	});
 };
 
 /**
