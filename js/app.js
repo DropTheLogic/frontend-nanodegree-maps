@@ -488,4 +488,4 @@ var MapsViewModel = function() {
 	}, this);
 };
 
-ko.applyBindings(new MapsViewModel);
+ko.applyBindings(new MapsViewModel());
