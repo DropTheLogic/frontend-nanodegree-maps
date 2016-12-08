@@ -200,6 +200,18 @@ a .rating-text {
 	font-style: italic;
 	padding: 5px;
 }
+#foursquare-attrib {
+	position: absolute;
+	bottom: 24px;
+	right: 40px;
+}
+#foursquare-attrib img {
+	width: 50%;
+	height: 50%;
+	float: right;
+	background-color: #fff;
+	box-shadow: 1px 1px 2px #ccc;
+}
 @media screen and (min-width: 400px) {
 	#subheader {
 		display: block;
