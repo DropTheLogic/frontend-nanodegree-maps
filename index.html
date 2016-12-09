@@ -38,6 +38,16 @@
 				}">
 				<h5 data-bind="text: $data.name"></h5>
 				<div class="address" data-bind="text: $data.address"></div>
+				<button class="fsPage" data-bind="
+					text: 'Visit Foursquare Page',
+					visible: $data.fsPage(),
+					click: function() { window.open($data.fsPage())}; ">
+				</button>
+				<button class="website" data-bind="
+					text: 'Visit Website',
+					visible: $data.website(),
+					click: function() { window.open($data.website()); } ">
+				</button>
 			</div>
 		</div>
 		<div class="list-item center" data-bind="visible: !markersReady()">

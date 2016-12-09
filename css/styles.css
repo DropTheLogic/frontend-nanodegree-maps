@@ -68,12 +68,27 @@ header h1 {
 }
 .list-item {
 	padding: 8px 8px 12px 8px;
+	border-bottom: 1px solid #6D4C41;
 }
 .list-item:hover {
 	background: #bcaaa4;
 }
 .list-item h5 {
 	margin: 8px 2px 0px;
+}
+.website, .fsPage {
+	display: inline;
+	height: 20px;
+	border: none;
+	border-radius: 2px;
+	font-size: 7px;
+	color: #795548;
+	background-color: #d7ccc8;
+	box-shadow: 1px 1px 2px #6D4C41;
+}
+.website:hover, .fsPage:hover {
+	background-color: #795548;
+	color: #d7ccc8;
 }
 .address {
 	font-size: 10px;
@@ -191,7 +206,7 @@ header h1 {
 .fair {
 	background-color: #fb1313;
 }
-a .rating-text {
+.rating-text {
 	font-size: 6px;
 	text-align: right;
 	color: black;

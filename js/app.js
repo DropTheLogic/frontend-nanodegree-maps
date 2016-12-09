@@ -1,6 +1,7 @@
 var map;
 var mapBounds;
 var infoWindow;
+var infoWindowLink;
 var foursquareError;
 
 // Array of markers for the map
@@ -235,10 +236,10 @@ var getFoursquareData = function(marker) {
 			var venue = data.response.venue;
 			// Place business wesite urls
 			if (venue.url) {
-				marker.website = venue.url;
+				listings[marker.index].website(venue.url);
 			}
 			if (venue.shortUrl) {
-				marker.fsPage = venue.shortUrl;
+				listings[marker.index].fsPage(venue.shortUrl);
 			}
 
 			// Place photo data
@@ -246,10 +247,9 @@ var getFoursquareData = function(marker) {
 				var picSize = 'height100';
 				var photoURL = venue.bestPhoto.prefix;
 				photoURL += picSize + venue.bestPhoto.suffix;
-				marker.photo = '<a href="' + marker.fsPage +
-					'" class="infowindow-link"><img src="' + photoURL +
+				marker.photo = '<img src="' + photoURL +
 					'" class="photo-frame" width="110" height="110" ' +
-					'alt="Foursquare photo of restaurant"/></a>';
+					'alt="Foursquare photo of restaurant"/>';
 			}
 
 			// Place hours data
@@ -276,10 +276,9 @@ var getFoursquareData = function(marker) {
 			if (venue.rating) {
 				var color = (venue.rating >= 8.7) ?
 					'great' : ((venue.rating >= 7) ? 'good' : 'fair');
-				marker.rating = '<a href="' + marker.fsPage +
-					'" class="infowindow-link"><div class="rating ' +
+				marker.rating = '<div class="rating ' +
 					color + '">' + venue.rating.toFixed(1) + '</div>' +
-					'<div class="rating-text">Foursquare<br>Rating</div></a>';
+					'<div class="rating-text">Foursquare<br>Rating</div>';
 			}
 
 			// Place description data
@@ -333,10 +332,6 @@ var openInfoWindow = function(marker) {
 		contentHTML += marker.photo;
 	}
 	contentHTML += title + address;
-	if (marker.website) {
-		contentHTML += '<a href="' + marker.website +
-			'" class="infowindow-link">' + marker.website + '</a>';
-	}
 	contentHTML += '<div class="section"><div class="col-75">';
 	if (marker.hours) {
 		contentHTML += marker.hours;
@@ -352,8 +347,7 @@ var openInfoWindow = function(marker) {
 		contentHTML += marker.description;
 	}
 	if (marker.tips) {
-		contentHTML += '<h5>Tips from <a href="' + marker.fsPage +
-			'" class="infowindow-link">Foursquare</a> users:</h5>';
+		contentHTML += '<h5>Tips from Foursquare users:</h5>';
 		contentHTML += marker.tips;
 	}
 	contentHTML += '</div>';
@@ -366,11 +360,6 @@ var openInfoWindow = function(marker) {
 	});
 
 	infoWindow.open(map, marker);
-
-	// Handler for inserting hyperlinks dynamically
-	$(".infowindow-link").on('click', function() {
-		window.location.href = this.href;
-	});
 };
 
 // Centers map around visible markers
@@ -435,7 +424,9 @@ var MapsViewModel = function() {
 		listings[i] = {
 			'index': i,
 			'name': ko.observable(''),
-			'address': ko.observable('')
+			'address': ko.observable(''),
+			'website': ko.observable(''),
+			'fsPage': ko.observable('')
 		};
 	}
 
