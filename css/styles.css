@@ -1,7 +1,19 @@
+/******************************************
+ * Colors
+ * ------
+ * Off-white: #fdfcf8;
+ * Eggshell: #ebe3cd;
+ * Seafoam: #b9d3c2;
+ * Guacamole: #a5b076;
+ * American-cheese Yellow: #f8c967;
+ * Orange: #e98d58;
+ * Burger-Brown: #3e2723;
+ ******************************************/
+
 body {
 	font-family: 'Courier New', monospace;
 	margin: 0px;
-	background: #d7ccc8;
+	background: #ebe3cd;
 }
 header {
 	text-align: center;
@@ -24,27 +36,29 @@ header h1 {
 	top: 0px;
 	bottom: 0px;
 	width: 218px;
-	background: #795548;
-	color: #d7ccc8;
+	border-right: 8px solid #a5b076;
+	background: #a5b076;
+	color: #3e2723;
+	box-shadow: 2px 2px 2px #3e2723;
 }
 .side-panel-closed {
-	left: -210px;
-	overflow-y: hidden;
+	left: -218px;
 }
 .side-panel-open {
 	left: 0px;
-	overflow-y: auto;
-	box-shadow: 0px 2px 8px #3e2723;
+	border-right: 0px !important;
 }
 #side-panel-tab {
-	position: fixed;
+	position: absolute;
 	top: 0px;
-	background: #795548;
+	background: #a5b076;
 	padding: 10px 12px;
 	border-radius: 0px 0px 12px 0px;
-	color: #d7ccc8;
-	box-shadow: 0px 2px 8px #3e2723;
+	color: #fdfcf8;
+	text-shadow: 1px 1px 2px #000, 0px 0px 4px #fff, 0px 0px 8px #fff;
+	box-shadow: 2px 2px 2px #3e2723;
 	margin: 0px;
+	z-index: 1000;
 }
 .tab-open {
 	left: 218px;
@@ -54,24 +68,39 @@ header h1 {
 }
 #side-panel h3 {
 	margin: 0px;
-	padding: 8px;
+	padding: 8px 8px 0px 8px;
 	text-align: center;
 }
 #filter {
 	padding: 8px;
 	font-size: 12px;
 	text-align: center;
-	box-shadow: 0px 2px 4px #3e2723;
+	box-shadow: -2px 2px 2px rgba(62, 39, 35, 0.32);
 }
 #filter-name {
 	width: 178px;
+}
+#filter input {
+	padding: 4px;
+	background-color: #fdfcf8;
+	border-top: 1px solid #727951;
+	border-left: 1px solid #727951;
+	border-right: 1px solid #ebe3cd;
+	border-bottom: 1px solid #ebe3cd;
+}
+#listings {
+	position: absolute;
+	top: 102px;
+	bottom: 0px;
+	width: 100%;
+	overflow-y: auto;
 }
 .list-item {
 	padding: 8px 8px 12px 8px;
 	border-bottom: 1px solid #6D4C41;
 }
 .list-item:hover {
-	background: #bcaaa4;
+	background: #e98d58;
 }
 .list-item h5 {
 	margin: 8px 2px 0px;
@@ -83,12 +112,12 @@ header h1 {
 	border-radius: 2px;
 	font-size: 7px;
 	color: #795548;
-	background-color: #d7ccc8;
+	background-color: #ebe3cd;
 	box-shadow: 1px 1px 2px #6D4C41;
 }
 .website:hover, .fsPage:hover {
-	background-color: #795548;
-	color: #d7ccc8;
+	background-color: #b9d3c2;
+	color: #3e2723;
 }
 .address {
 	font-size: 10px;
@@ -251,12 +280,12 @@ header h1 {
 }
 @media screen and (min-width: 720px) {
 	#side-panel {
-		top: 108px;
+		top: 96px;
+		border-right: 0px;
+		border-radius: 24px 24px 0px 0px;
 	}
 	.side-panel-closed {
 		left: 0px;
-		overflow-y: auto;
-		box-shadow: 0px 2px 8px #3e2723;
 	}
 	#side-panel-tab {
 		display: none;
@@ -271,6 +300,7 @@ header h1 {
 @media screen and (min-width: 920px) {
 	#side-panel {
 		width: 25%;
+		top: 80px;
 	}
 	#map {
 		left: 25%;
