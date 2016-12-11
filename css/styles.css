@@ -105,6 +105,9 @@ header h1 {
 .list-item h5 {
 	margin: 8px 2px 0px;
 }
+.selected {
+	background-color: #f8c967;
+}
 .website, .fsPage {
 	display: inline;
 	height: 20px;

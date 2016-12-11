@@ -35,7 +35,9 @@
 				click: function() {
 					new google.maps.event.trigger(markers[$data.index], 'click');
 					$root.toggleSidePanel();
-				}">
+					selectedListing($data);
+				},
+				css: {selected: selectedListing() === $data }">
 				<h5 data-bind="text: $data.name"></h5>
 				<div class="address" data-bind="text: $data.address"></div>
 				<button class="fsPage" data-bind="

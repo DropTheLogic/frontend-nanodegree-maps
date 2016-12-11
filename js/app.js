@@ -10,6 +10,7 @@ var markersReady = ko.observable(false);
 
 // Array of listings for list view of locations
 var listings = [];
+var selectedListing = ko.observable();
 
 // Array of venue location data
 var dataListings = [
@@ -346,6 +347,8 @@ var createMarkers = function(i) {
 				});
 				// Animate this marker
 				marker.setAnimation(google.maps.Animation.BOUNCE);
+				//Select the corresponding listing for this marker
+				selectedListing(listings[this.index]);
 				// Open infoWindow for this marker
 				openInfoWindow(this, infoWindow);
 			});
@@ -540,6 +543,8 @@ var openInfoWindow = function(marker) {
 	google.maps.event.addListener(infoWindow, 'closeclick', function() {
 		marker.setAnimation(null);
 		centerMap();
+		// Reset selected listing
+		selectedListing('');
 	});
 
 	infoWindow.open(map, marker);
