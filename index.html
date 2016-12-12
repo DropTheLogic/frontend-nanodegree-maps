@@ -16,7 +16,10 @@
 		<div class="logo"></div>
 		<h1>The Williamsburger!</h1>
 		<div class="logo"></div>
-		<h4 id="side-panel-tab" data-bind="click: toggleSidePanel, css: setTabCSS">Feed Me!</h4>
+		<h4 id="side-panel-tab" data-bind="
+			click: toggleSidePanel,
+			css: setTabCSS,
+			text: (panelIsOpen()) ? 'Close ✖' : 'Feed Me!'"></h4>
 		<div id="subheader">Finding the burgers in Williamsburg</div>
 	</header>
 
