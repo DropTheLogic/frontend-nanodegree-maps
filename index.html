@@ -65,7 +65,11 @@
 	<div id="map" data-bind="click: closeSidePanel"></div>
 	<div id="loading-map" data-bind="visible: !markersReady()">
 		<div class="loading-burger"></div>
-		<div data-bind="text: loadString"></div>
+		<div class="flex-container">
+			<div class="col-flex"></div>
+			<div>Loading</div>
+			<div class="col-flex ellipses" data-bind="text: ellipses"></div>
+		</div>
 	</div>
 
 	<script src="js/knockout-3.4.0.js"></script>

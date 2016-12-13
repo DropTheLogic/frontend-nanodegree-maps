@@ -572,20 +572,19 @@ var MapsViewModel = function() {
 	var self = this;
 
 	// String for loading text animation
-	self.loadString = ko.observable('Loading');
+	self.ellipses = ko.observable('');
 	// Animates loading text
 	self.loading = ko.computed(function() {
 		// Use setInterval to add to the ellipses, or to revert text
 		var animate = setInterval(function() {
-			(self.loadString().length < 12) ?
-				self.loadString('.' + self.loadString() + '.') :
-				self.loadString('Loading');
+			(self.ellipses().length < 3) ?
+				self.ellipses(self.ellipses() + '.') : self.ellipses('');
 		}, 750);
 		// When markers are loaded, clearInterval
 		if (markersReady()) {
 			clearInterval(animate);
 		}
-		return self.loadString;
+		return self.ellipses;
 	}, this);
 
 	// Handle state of slide-out panel for listings
