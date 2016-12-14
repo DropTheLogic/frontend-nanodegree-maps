@@ -32,7 +32,8 @@
 				   data-bind="textInput: filter, event: {keydown: $root.esc}" />
 			<div data-bind="text: filterCountString"></div>
 		</div>
-		<div id="listings" data-bind="foreach: listings">
+		<div id="listings">
+			<!-- ko foreach: {data: listings} -->
 			<div class="list-item" data-bind="
 				visible: $root.isFiltered($data),
 				click: function() {
@@ -53,6 +54,14 @@
 					visible: $data.website(),
 					click: function() { window.open($data.website()); } ">
 				</button>
+			</div>
+			<!-- /ko -->
+			<div class="list-item" data-bind="visible: !markersReady()">
+				<div class="flex-container">
+					<div class="col-flex"></div>
+					<h5>Loading</h5>
+					<h5 class="col-flex ellipses" data-bind="text: ellipses"></h5>
+				</div>
 			</div>
 		</div>
 	</div>
