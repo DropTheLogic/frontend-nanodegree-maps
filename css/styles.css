@@ -84,12 +84,15 @@ header h1 {
 	width: 178px;
 }
 #filter input {
+	width: 75%;
+	vertical-align: middle;
 	padding: 4px;
 	background-color: #fdfcf8;
 	border-top: 1px solid #727951;
 	border-left: 1px solid #727951;
 	border-right: 1px solid #ebe3cd;
 	border-bottom: 1px solid #ebe3cd;
+	box-shadow: inset 1px 1px 2px #52563c;
 }
 #listings {
 	position: absolute;
@@ -111,19 +114,27 @@ header h1 {
 .selected {
 	background-color: #f8c967;
 }
-.website, .fsPage {
+button {
 	display: inline;
 	height: 20px;
 	border: none;
-	border-radius: 2px;
+	border-bottom: 1px solid;
+	border-right: 1px solid;
+	border-radius: 6px;
 	font-size: 7px;
-	color: #795548;
+	color: #3e2723;
 	background-color: #ebe3cd;
 	box-shadow: 1px 1px 2px #6D4C41;
 }
-.website:hover, .fsPage:hover {
-	background-color: #b9d3c2;
+button:hover {
+	background-color: #f8c967;
 	color: #3e2723;
+}
+button:active {
+	background-color: #b9d3c2;
+	position: relative;
+	left: 1px;
+	top: 1px;
 }
 .address {
 	font-size: 10px;
