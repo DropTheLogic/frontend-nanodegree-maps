@@ -30,6 +30,8 @@
 			<input id="filter-name" type="text"
 				   name="filter-name" placeholder="e.g. 'DuMont' or 'Broadway'"
 				   data-bind="textInput: filter, event: {keydown: $root.esc}" />
+			<button data-bind="event: {click: function() {$root.filter('');} }">
+				✖</button>
 			<div data-bind="text: filterCountString"></div>
 		</div>
 		<div id="listings">
