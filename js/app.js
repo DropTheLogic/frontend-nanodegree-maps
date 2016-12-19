@@ -576,13 +576,15 @@ var MapsViewModel = function() {
 	// Animates loading text
 	self.loading = ko.computed(function() {
 		// Use setInterval to add to the ellipses, or to revert text
-		var animate = setInterval(function() {
-			(self.ellipses().length < 3) ?
-				self.ellipses(self.ellipses() + '.') : self.ellipses('');
-		}, 750);
+		if (!markersReady()) {
+			self.animate = setInterval(function() {
+				(self.ellipses().length < 3) ?
+					self.ellipses(self.ellipses() + '.') : self.ellipses('');
+			}, 750);
+		}
 		// When markers are loaded, clearInterval
-		if (markersReady()) {
-			clearInterval(animate);
+		else {
+			clearInterval(self.animate);
 		}
 		return self.ellipses;
 	}, this);
