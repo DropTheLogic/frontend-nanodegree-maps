@@ -436,6 +436,10 @@ var getFoursquareData = function(marker) {
 				marker.photo = '<img src="' + photoURL +
 					'" class="photo-frame" width="110" height="110" ' +
 					'alt="Foursquare photo of restaurant"/>';
+				var miniPic = '<img src="' + photoURL +
+					'" class="mini-photo-frame" width="55" height="55" ' +
+					'alt="Foursquare photo of restaurant"/>';
+				loadPicIntoListing(marker.index, miniPic);
 			}
 
 			// Place hours data
@@ -568,6 +572,11 @@ var loadMarkerIntoListing = function(marker) {
 	listings[marker.index].address(marker.address);
 };
 
+// Loads photo into list view listing
+var loadPicIntoListing = function(i, html) {
+	listings[i].pic(html);
+};
+
 var MapsViewModel = function() {
 	var self = this;
 
@@ -612,6 +621,7 @@ var MapsViewModel = function() {
 	for (var i = 0; i < dataListings.length; i++) {
 		listings[i] = {
 			'index': i,
+			'pic' : ko.observable(''),
 			'name': ko.observable(''),
 			'address': ko.observable(''),
 			'website': ko.observable(''),

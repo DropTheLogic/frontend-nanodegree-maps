@@ -44,6 +44,7 @@
 					selectedListing($data);
 				},
 				css: {selected: selectedListing() === $data }">
+				<div data-bind="html: $data.pic"></div>
 				<h5 data-bind="text: $data.name"></h5>
 				<div class="address" data-bind="text: $data.address"></div>
 				<button class="fsPage" data-bind="

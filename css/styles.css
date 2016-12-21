@@ -105,14 +105,17 @@ header h1 {
 	overflow-y: auto;
 }
 .list-item {
-	padding: 8px 8px 12px 8px;
+	padding: 12px 8px;
 	border-bottom: 1px solid #6D4C41;
 }
 .list-item:hover {
 	background: #e98d58;
 }
 .list-item h5 {
-	margin: 8px 2px 0px;
+	margin: 0px;
+}
+.mini-photo-frame {
+	display: none;
 }
 .selected {
 	background-color: #f8c967;
@@ -326,10 +329,17 @@ button:active {
 		left: 218px;
 	}
 }
-@media screen and (min-width: 920px) {
+@media screen and (min-width: 1050px) {
 	#side-panel {
 		width: 25%;
 		top: 80px;
+	}
+	.mini-photo-frame {
+		display: block;
+		margin-right: 10px;
+		border: 3px solid #eee;
+		float: left;
+		box-shadow: 1px 1px #6d4c41;
 	}
 	#map {
 		left: 25%;
