@@ -407,6 +407,9 @@ header h1 {
 		width: 25%;
 		top: 80px;
 	}
+	.list-item {
+		min-height: 61px;
+	}
 	.mini-photo-frame {
 		display: block;
 		margin-right: 10px;
