@@ -12,6 +12,8 @@
 </head>
 
 <body>
+
+	<!-- Header -->
 	<header>
 		<div class="logo"></div>
 		<h1>The Williamsburger!</h1>
@@ -23,8 +25,11 @@
 		<div id="subheader">Finding the burgers in Williamsburg</div>
 	</header>
 
+	<!-- Venue list-view / Side-Panel Area -->
 	<div id="side-panel" data-bind="css: setSidePanelCSS">
 		<h3>THE LIST</h3>
+
+		<!-- Text input filter for listings -->
 		<div id="filter">
 			<div>Filter list:</div>
 			<input id="filter-name" type="text"
@@ -34,6 +39,8 @@
 				✖</button>
 			<div data-bind="text: filterCountString"></div>
 		</div>
+
+		<!-- Listings -->
 		<div id="listings">
 			<!-- ko foreach: {data: listings} -->
 			<div class="list-item" data-bind="
@@ -69,6 +76,7 @@
 		</div>
 	</div>
 
+	<!-- Map Area -->
 	<div id="foursquare-attrib">
 		<a href="https://www.foursquare.com"><img src="img/Powered-by-Foursquare-black-300.png"
 			alt="Powered by Foursquare" /></a>
