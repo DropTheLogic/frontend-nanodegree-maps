@@ -1,0 +1,28 @@
+ {
+  "name": "williamsburger",
+  "version": "1.0.0",
+  "description": "Neighborhood burger finder",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DropTheLogic/frontend-nanodegree-maps.git"
+  },
+  "author": "Daniel Marquez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DropTheLogic/frontend-nanodegree-maps/issues"
+  },
+  "homepage": "https://github.com/DropTheLogic/frontend-nanodegree-maps#readme",
+  "devDependencies": {
+    "del": "^2.2.2",
+    "gulp": "^3.9.1",
+    "gulp-clean-css": "^2.3.2",
+    "gulp-imagemin": "^3.1.1",
+    "gulp-uglify": "^2.0.0",
+    "gulp-useref": "^3.1.2",
+    "run-sequence": "^1.2.2"
+  }
+}
