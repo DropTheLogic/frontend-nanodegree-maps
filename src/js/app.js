@@ -456,8 +456,8 @@ var getFoursquareData = function(marker) {
 				marker.hours = '<div class="section-head"> Hours:';
 				hours.timeframes.forEach(function (timeframe) {
 					marker.hours +=
-						`<div class="section-sub">${timeframe.days}` +
-						` : ${timeframe.open[0].renderedTime}</div>`;
+						'<div class="section-sub">' + timeframe.days +
+						' : ' + timeframe.open[0].renderedTime + '</div>';
 				});
 				marker.hours += '</div>';
 			}
@@ -484,7 +484,7 @@ var getFoursquareData = function(marker) {
 					var tip = tipData.items[i];
 					if (tip.text.indexOf('burger') >= 0) {
 						tipsHTML +=
-							`<li>"${tip.text}" - ${tip.user.firstName}</li>`;
+							'<li>' + tip.text + ' - ' + tip.user.firstName + '</li>';
 					}
 				}
 				tipsHTML += '</ul>';

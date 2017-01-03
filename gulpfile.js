@@ -16,7 +16,9 @@ var runSequence = require('run-sequence');
 gulp.task('useref', function() {
 	return gulp.src('src/*.html')
 		.pipe(useref())
-		//.pipe(gulpIf('*.js', uglify()))
+		.pipe(gulpIf('*.js', uglify()).on('error', function(e){
+            console.log(e);
+         }))
 		.pipe(gulpIf('*.css', cleanCSS()))
 		.pipe(gulp.dest('dist'))
 });
